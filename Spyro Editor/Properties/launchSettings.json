@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Spyro Editor (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Spyro Editor (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
