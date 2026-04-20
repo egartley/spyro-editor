@@ -13,7 +13,60 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid>
+    <Grid x:Name="rootGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
+        <TitleBar x:Name="mainTitleBar" Title="Spyro Editor" />
+        <MenuBar Grid.Row="1">
+            <MenuBarItem Title="File">
+                <MenuFlyoutItem Text="Open WAD..." Click="OpenWADFlyoutItem_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="O" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Exit" Click="ExitProgramFlyoutItem_Click" />
+            </MenuBarItem>
+            <MenuBarItem Title="Edit">
+                <MenuFlyoutItem Text="Settings" Click="SettingsFlyoutItem_Click" />
+            </MenuBarItem>
+            <MenuBarItem Title="Help">
+                <MenuFlyoutItem Text="View on GitHub..." Click="OpenGitHubFlyoutItem_Click" />
+                <MenuFlyoutItem Text="About" Click="AboutFlyoutItem_Click" />
+            </MenuBarItem>
+        </MenuBar>
+
+        <SplitView Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" Margin="12" CornerRadius="4" PaneBackground="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}">
+            <SplitView.Pane>
+                <StackPanel>
+                    <TextBlock Text="Level Browser" Margin="8,12,8,12" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                    <TreeView>
+                        <TreeView.RootNodes>
+                            <TreeViewNode Content="Spyro the Dragon (WAD.WAD)" IsExpanded="True">
+                                <TreeViewNode.Children>
+                                    <TreeViewNode Content="11 - Artisans" />
+                                    <TreeViewNode Content="13 - Stone Hill" />
+                                    <TreeViewNode Content="15 - Dark Hollow" />
+                                </TreeViewNode.Children>
+                            </TreeViewNode>
+                            <TreeViewNode Content="Spyro 2: Ripto's Rage! (WAD.WAD)" IsExpanded="True">
+                                <TreeViewNode.Children>
+                                    <TreeViewNode Content="16 - Summer Forest" />
+                                    <TreeViewNode Content="18 - Glimmer" />
+                                    <TreeViewNode Content="20 - Idol Springs" />
+                                </TreeViewNode.Children>
+                            </TreeViewNode>
+                        </TreeView.RootNodes>
+                    </TreeView>
+                </StackPanel>
+            </SplitView.Pane>
+
+            <Grid>
+                <TextBlock Text="Open a WAD file to get started" Foreground="{ThemeResource TemporaryTextFillColorDisabled}" Style="{ThemeResource BodyLargeTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </Grid>
+        </SplitView>
     </Grid>
 </Window>

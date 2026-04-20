@@ -1,31 +1,59 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Microsoft.Windows.Storage.Pickers;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using System.Diagnostics;
 
 namespace Spyro_Editor
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+            ExtendsContentIntoTitleBar = true;
+            SetTitleBar(mainTitleBar);
+        }
+
+        private async void OpenWADFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            FileOpenPicker opener = new FileOpenPicker(AppWindow.Id)
+            {
+                SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
+                FileTypeFilter = { ".wad" }
+            };
+            var file = await opener.PickSingleFileAsync();
+        }
+
+        private void OpenGitHubFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://github.com/egartley/spyro-editor",
+                UseShellExecute = true
+            });
+        }
+
+        private void SettingsFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void AboutFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog dialog = new ContentDialog()
+            {
+                XamlRoot = rootGrid.XamlRoot,
+                Title = "Spyro Editor",
+                Content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eget velit quis eros interdum venenatis at sed enim.",
+                CloseButtonText = "Ok"
+            };
+            await dialog.ShowAsync();
+        }
+
+        private void ExitProgramFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            Environment.Exit(0);
         }
     }
 }
