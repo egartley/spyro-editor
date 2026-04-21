@@ -39,31 +39,7 @@
             </MenuBarItem>
         </MenuBar>
 
-        <SplitView Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" Margin="12" CornerRadius="4" PaneBackground="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}">
-            <SplitView.Pane>
-                <StackPanel>
-                    <TextBlock Text="Level Browser" Margin="8,12,8,12" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-                    <TreeView>
-                        <TreeView.RootNodes>
-                            <TreeViewNode Content="Spyro the Dragon (WAD.WAD)" IsExpanded="True">
-                                <TreeViewNode.Children>
-                                    <TreeViewNode Content="11 - Artisans" />
-                                    <TreeViewNode Content="13 - Stone Hill" />
-                                    <TreeViewNode Content="15 - Dark Hollow" />
-                                </TreeViewNode.Children>
-                            </TreeViewNode>
-                            <TreeViewNode Content="Spyro 2: Ripto's Rage! (WAD.WAD)" IsExpanded="True">
-                                <TreeViewNode.Children>
-                                    <TreeViewNode Content="16 - Summer Forest" />
-                                    <TreeViewNode Content="18 - Glimmer" />
-                                    <TreeViewNode Content="20 - Idol Springs" />
-                                </TreeViewNode.Children>
-                            </TreeViewNode>
-                        </TreeView.RootNodes>
-                    </TreeView>
-                </StackPanel>
-            </SplitView.Pane>
-
+        <SplitView x:Name="mainSplitView" Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" Margin="12" CornerRadius="4" PaneBackground="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}">
             <Grid>
                 <TextBlock Text="Open a WAD file to get started" Foreground="{ThemeResource TemporaryTextFillColorDisabled}" Style="{ThemeResource BodyLargeTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
             </Grid>

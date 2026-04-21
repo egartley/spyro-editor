@@ -1,18 +1,26 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
+using Spyro_Editor.Data;
+using Spyro_Editor.Views;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace Spyro_Editor
 {
     public sealed partial class MainWindow : Window
     {
+        private WADView wadView;
+
         public MainWindow()
         {
             InitializeComponent();
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(mainTitleBar);
+
+            wadView = new WADView();
+            mainSplitView.Pane = wadView;
         }
 
         private async void OpenWADFlyoutItem_Click(object sender, RoutedEventArgs e)
@@ -22,7 +30,19 @@ namespace Spyro_Editor
                 SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
                 FileTypeFilter = { ".wad" }
             };
-            var file = await opener.PickSingleFileAsync();
+            var result = await opener.PickSingleFileAsync();
+            if (result is not null)
+            {
+                string path = result.Path;
+                using (var stream = File.Open(result.Path, FileMode.Open))
+                {
+                    using (var reader = new BinaryReader(stream))
+                    {
+                        WAD wad = new WAD(reader, path);
+                        wadView.Model.AddWAD(wad);
+                    }
+                }
+            }
         }
 
         private void OpenGitHubFlyoutItem_Click(object sender, RoutedEventArgs e)
