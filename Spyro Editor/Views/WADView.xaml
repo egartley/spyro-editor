@@ -10,7 +10,7 @@
     mc:Ignorable="d">
     <Page.Resources>
         <DataTemplate x:Key="WADTreeNodeTemplate" x:DataType="models:WADTreeNode">
-            <TreeViewItem ItemsSource="{x:Bind Children}" Content="{x:Bind DisplayName}" IsExpanded="True" />
+            <TreeViewItem ItemsSource="{x:Bind Children}" Content="{x:Bind DisplayName}" IsExpanded="{x:Bind IsExpanded}" />
         </DataTemplate>
     </Page.Resources>
 

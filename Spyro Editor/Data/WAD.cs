@@ -9,6 +9,7 @@ namespace Spyro_Editor.Data
     {
         public string DisplayName;
         public List<Subfile> Subfiles = [];
+        private Game Game;
         private string Path;
 
         public WAD(BinaryReader reader, string path)
@@ -19,12 +20,15 @@ namespace Spyro_Editor.Data
             switch (magic)
             {
                 case (uint)WADSignature.Spyro1_NTSC:
+                    Game = Game.Spyro1;
                     DisplayName = "Spyro the Dragon (NTSC)";
                     break;
                 case (uint)WADSignature.Spyro2_NTSC:
+                    Game = Game.Spyro2;
                     DisplayName = "Spyro 2: Ripto's Rage! (NTSC)";
                     break;
                 case (uint)WADSignature.Spyro3_NTSC:
+                    Game = Game.Spyro3;
                     DisplayName = "Spyro: Year of the Dragon (NTSC)";
                     break;
                 default:
@@ -37,6 +41,7 @@ namespace Spyro_Editor.Data
 
         public void Read(BinaryReader reader)
         {
+            byte index = 0;
             byte strikes = 0;
             while (strikes < 3)
             {
@@ -51,20 +56,11 @@ namespace Spyro_Editor.Data
                     strikes = 0;
                     if (size > 0)
                     {
-                        Subfiles.Add(new Subfile(offset, size));
+                        Subfiles.Add(new Subfile(Game, (byte)(index + 1), offset, size));
                     }
                 }
+                index++;
             }
-        }
-    }
-
-    public class Subfile
-    {
-        public string DisplayName;
-
-        public Subfile(uint offset, uint size)
-        {
-            DisplayName = $"0x{offset.ToString("X")} ({size})";
         }
     }
 }

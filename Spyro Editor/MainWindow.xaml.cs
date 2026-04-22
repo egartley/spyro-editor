@@ -6,16 +6,19 @@ using Spyro_Editor.Views;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 
 namespace Spyro_Editor
 {
     public sealed partial class MainWindow : Window
     {
         private WADView wadView;
+        private Version Version;
 
         public MainWindow()
         {
             InitializeComponent();
+            Version = Assembly.GetEntryAssembly()!.GetName().Version!;
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(mainTitleBar);
 
@@ -65,7 +68,7 @@ namespace Spyro_Editor
             {
                 XamlRoot = rootGrid.XamlRoot,
                 Title = "Spyro Editor",
-                Content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eget velit quis eros interdum venenatis at sed enim.",
+                Content = $"Version {Version.ToString()}",
                 CloseButtonText = "Ok"
             };
             await dialog.ShowAsync();
