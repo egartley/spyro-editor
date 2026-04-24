@@ -1,6 +1,10 @@
 # Spyro Editor
 
-WAD resource viewer and editor for the Spyro trilogy on PlayStation 1. Currently a work in progress.
+----------------------------------------
+### ⚠️ Work in Progress ⚠️
+----------------------------------------
+
+WAD resource viewer and editor for the Spyro trilogy on PlayStation 1.
 
 This is meant to be a spiritual successor to "Spyro World Viewer," and is heavily based on its source code as well as my own work for visualizing the Spyro games in the [noclip.website](https://github.com/magcius/noclip.website/tree/main/src/Spyro) project.
 
@@ -8,7 +12,7 @@ Only Windows 11 and newer versions of 10 are supported. Linux and macOS will not
 
 Initial features will include:
 
-- 3D view of levels and cutscenes
+- 3D view of levels' base models
 - Basic level editing
   - Change vertex colors, UVs, and texture indices
   - Custom geometry (limited)
