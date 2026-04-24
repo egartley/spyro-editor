@@ -1,31 +1,38 @@
 ﻿using Spyro_Editor.Constants;
+using Spyro_Editor.Interfaces;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Spyro_Editor.Data
 {
-    public class Subfile
+    public class Subfile : IBinaryObject
     {
+        public byte Id;
+        public byte WADId;
+        public uint Offset;
+        public uint Size;
         public string DisplayName;
         public SubfileType Type;
-        private byte Id;
-        private uint Offset;
-        private uint Size;
-        private Game Game;
 
-        public Subfile(Game game, byte id, uint offset, uint size)
+        public Subfile(Game game, byte wadId, byte id, uint offset, uint size)
         {
             Id = id;
+            WADId = wadId;
             Offset = offset;
             Size = size;
-            Game = game;
-            DisplayName = $"{Id} - {GetDisplayName()}";
-            Type = GetType();
+            DisplayName = $"{Id} - {GetDisplayName(game)}";
+            Type = GetType(game);
         }
 
-        private string GetDisplayName()
+        public void Read(BinaryReader reader)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private string GetDisplayName(Game game)
         {
             Dictionary<byte, string> names;
-            switch (Game)
+            switch (game)
             {
                 case Game.Spyro1:
                     names = SubfileNames.Spyro1;
@@ -49,9 +56,9 @@ namespace Spyro_Editor.Data
             }
         }
 
-        private SubfileType GetType()
+        private SubfileType GetType(Game game)
         {
-            switch (Game)
+            switch (game)
             {
                 case Game.Spyro1:
                     if (11 <= Id && 79 >= Id)

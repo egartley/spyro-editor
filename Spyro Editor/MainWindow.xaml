@@ -39,10 +39,6 @@
             </MenuBarItem>
         </MenuBar>
 
-        <SplitView x:Name="mainSplitView" Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" Margin="12" CornerRadius="4" PaneBackground="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}">
-            <Grid>
-                <TextBlock Text="Open a WAD file to get started" Foreground="{ThemeResource TemporaryTextFillColorDisabled}" Style="{ThemeResource BodyLargeTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            </Grid>
-        </SplitView>
+        <SplitView x:Name="mainSplitView" Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" Margin="12" CornerRadius="4" PaneBackground="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}" />
     </Grid>
 </Window>

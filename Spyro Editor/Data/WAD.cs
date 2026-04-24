@@ -7,13 +7,15 @@ namespace Spyro_Editor.Data
 {
     public class WAD : IBinaryObject
     {
+        public byte Id;
+        public string Path;
         public string DisplayName;
         public List<Subfile> Subfiles = [];
         private Game Game;
-        private string Path;
 
-        public WAD(BinaryReader reader, string path)
+        public WAD(BinaryReader reader, string path, byte id)
         {
+            Id = id;
             Path = path;
             reader.BaseStream.Seek(0x100, SeekOrigin.Begin);
             uint magic = reader.ReadUInt32();
@@ -56,7 +58,7 @@ namespace Spyro_Editor.Data
                     strikes = 0;
                     if (size > 0)
                     {
-                        Subfiles.Add(new Subfile(Game, (byte)(index + 1), offset, size));
+                        Subfiles.Add(new Subfile(Game, Id, (byte)(index + 1), offset, size));
                     }
                 }
                 index++;

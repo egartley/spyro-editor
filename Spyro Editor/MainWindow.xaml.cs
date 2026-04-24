@@ -12,8 +12,11 @@ namespace Spyro_Editor
 {
     public sealed partial class MainWindow : Window
     {
-        private WADView wadView;
+        private byte LastWADId = 0;
         private Version Version;
+        private WADBrowser WADBrowser;
+        private GetStarted GetStarted;
+        private SubfileBinary SubfileBinary;
 
         public MainWindow()
         {
@@ -22,8 +25,28 @@ namespace Spyro_Editor
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(mainTitleBar);
 
-            wadView = new WADView();
-            mainSplitView.Pane = wadView;
+            WADBrowser = new WADBrowser(this);
+            GetStarted = new GetStarted();
+            SubfileBinary = new SubfileBinary();
+
+            mainSplitView.Pane = WADBrowser;
+            mainSplitView.Content = GetStarted;
+            SubfileBinary.Visibility = Visibility.Collapsed;
+        }
+
+        public async void LoadSubfileBinary(string wadPath, Subfile subfile)
+        {
+            byte[] buffer = new byte[subfile.Size];
+            using (var stream = File.Open(wadPath, FileMode.Open))
+            {
+                stream.Seek(subfile.Offset, SeekOrigin.Begin);
+                await stream.ReadExactlyAsync(buffer, 0, (int)subfile.Size);
+            }
+            SubfileBinary.Load(buffer);
+
+            GetStarted.Visibility = Visibility.Collapsed;
+            SubfileBinary.Visibility = Visibility.Visible;
+            mainSplitView.Content = SubfileBinary;
         }
 
         private async void OpenWADFlyoutItem_Click(object sender, RoutedEventArgs e)
@@ -41,8 +64,8 @@ namespace Spyro_Editor
                 {
                     using (var reader = new BinaryReader(stream))
                     {
-                        WAD wad = new WAD(reader, path);
-                        wadView.Model.AddWAD(wad);
+                        WAD wad = new WAD(reader, path, LastWADId++);
+                        WADBrowser.Add(wad);
                     }
                 }
             }
