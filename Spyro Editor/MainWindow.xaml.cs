@@ -12,44 +12,26 @@ namespace Spyro_Editor
 {
     public sealed partial class MainWindow : Window
     {
-        private byte LastWADId = 0;
         private Version Version;
         private WADBrowser WADBrowser;
-        private GetStarted GetStarted;
-        private SubfileBinary SubfileBinary;
+        private GetStartedPane GetStartedPane;
+        private SubfilePane? SubfilePane;
 
         public MainWindow()
         {
             InitializeComponent();
             Version = Assembly.GetEntryAssembly()!.GetName().Version!;
             ExtendsContentIntoTitleBar = true;
-            SetTitleBar(mainTitleBar);
+            SetTitleBar(MainTitleBar);
 
             WADBrowser = new WADBrowser(this);
-            GetStarted = new GetStarted();
-            SubfileBinary = new SubfileBinary();
+            GetStartedPane = new GetStartedPane(this);
 
-            mainSplitView.Pane = WADBrowser;
-            mainSplitView.Content = GetStarted;
-            SubfileBinary.Visibility = Visibility.Collapsed;
+            MainSplitView.Pane = WADBrowser;
+            MainSplitView.Content = GetStartedPane;
         }
 
-        public async void LoadSubfileBinary(string wadPath, Subfile subfile)
-        {
-            byte[] buffer = new byte[subfile.Size];
-            using (var stream = File.Open(wadPath, FileMode.Open))
-            {
-                stream.Seek(subfile.Offset, SeekOrigin.Begin);
-                await stream.ReadExactlyAsync(buffer, 0, (int)subfile.Size);
-            }
-            SubfileBinary.Load(buffer);
-
-            GetStarted.Visibility = Visibility.Collapsed;
-            SubfileBinary.Visibility = Visibility.Visible;
-            mainSplitView.Content = SubfileBinary;
-        }
-
-        private async void OpenWADFlyoutItem_Click(object sender, RoutedEventArgs e)
+        public async void OpenWAD()
         {
             FileOpenPicker opener = new FileOpenPicker(AppWindow.Id)
             {
@@ -59,16 +41,54 @@ namespace Spyro_Editor
             var result = await opener.PickSingleFileAsync();
             if (result is not null)
             {
+                WAD wad;
                 string path = result.Path;
                 using (var stream = File.Open(result.Path, FileMode.Open))
                 {
                     using (var reader = new BinaryReader(stream))
                     {
-                        WAD wad = new WAD(reader, path, LastWADId++);
-                        WADBrowser.Add(wad);
+                        wad = new WAD(reader, path);
                     }
                 }
+                WADBrowser.Load(wad);
+                GetStartedPane.OnWADLoaded();
             }
+        }
+
+        private void CloseWAD()
+        {
+            if (SubfilePane is not null)
+            {
+                SubfilePane.Close();
+                SubfilePane.Visibility = Visibility.Collapsed;
+            }
+            WADBrowser.Unload();
+            GetStartedPane.OnWADClosed();
+            GetStartedPane.Visibility = Visibility.Visible;
+            MainSplitView.Content = GetStartedPane;
+        }
+
+        public void LoadSubfile(string wadPath, Subfile subfile)
+        {
+            if (SubfilePane is null)
+            {
+                SubfilePane = new SubfilePane();
+            }
+            SubfilePane.Load(wadPath, subfile);
+
+            GetStartedPane.Visibility = Visibility.Collapsed;
+            SubfilePane.Visibility = Visibility.Visible;
+            MainSplitView.Content = SubfilePane;
+        }
+
+        private void OpenWADFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            OpenWAD();
+        }
+
+        private void CloseWADFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            CloseWAD();
         }
 
         private void OpenGitHubFlyoutItem_Click(object sender, RoutedEventArgs e)
@@ -97,7 +117,7 @@ namespace Spyro_Editor
             await dialog.ShowAsync();
         }
 
-        private void ExitProgramFlyoutItem_Click(object sender, RoutedEventArgs e)
+        private void ExitFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             Environment.Exit(0);
         }

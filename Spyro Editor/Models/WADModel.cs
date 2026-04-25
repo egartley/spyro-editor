@@ -1,29 +1,27 @@
 ﻿using Spyro_Editor.Constants;
 using Spyro_Editor.Data;
-using System.Collections.Generic;
+using Spyro_Editor.Views;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using Windows.Devices.Radios;
 
 namespace Spyro_Editor.Models
 {
     public class WADModel
     {
         public ObservableCollection<WADTreeNode> Nodes = new ObservableCollection<WADTreeNode>();
-        private List<WAD> WADs = [];
+        private WAD? WAD;
 
-        public void Add(WAD wad)
+        public void Load(WAD wad)
         {
-            WADs.Add(wad);
-            WADTreeNode node = new WADTreeNode() { DisplayName = wad.DisplayName, Type = WADTreeNode.NodeType.Root, IsExpanded = true };
-            WADTreeNode levels = new WADTreeNode() { DisplayName = "Levels", Type = WADTreeNode.NodeType.Group, IsExpanded = true };
-            WADTreeNode cutscenes = new WADTreeNode() { DisplayName = "Cutscenes", Type = WADTreeNode.NodeType.Group };
-            WADTreeNode flyovers = new WADTreeNode() { DisplayName = "Credits Flyovers", Type = WADTreeNode.NodeType.Group };
-            WADTreeNode overlays = new WADTreeNode() { DisplayName = "Overlays", Type = WADTreeNode.NodeType.Group };
-            WADTreeNode other = new WADTreeNode() { DisplayName = "Other", Type = WADTreeNode.NodeType.Group };
+            WAD = wad;
+            Nodes.Clear();
+            WADTreeNode levels = new WADTreeNode() { DisplayName = "Levels", Glyph = "\uF158", Type = WADTreeNode.NodeType.Group, IsExpanded = true };
+            WADTreeNode cutscenes = new WADTreeNode() { DisplayName = "Cutscenes", Glyph = "\uE8B2", Type = WADTreeNode.NodeType.Group };
+            WADTreeNode flyovers = new WADTreeNode() { DisplayName = "Credits Flyovers", Glyph = "\uEA37", Type = WADTreeNode.NodeType.Group };
+            WADTreeNode overlays = new WADTreeNode() { DisplayName = "Overlays", Glyph = "\uEEA1", Type = WADTreeNode.NodeType.Group };
+            WADTreeNode other = new WADTreeNode() { DisplayName = "Other", Glyph = "\uE8A5", Type = WADTreeNode.NodeType.Group };
             foreach (Subfile sf in wad.Subfiles)
             {
-                WADTreeNode n = new WADTreeNode() { DisplayName = sf.DisplayName, Id = sf.Id, WADId = sf.WADId, Type = WADTreeNode.NodeType.Subfile };
+                WADTreeNode n = new WADTreeNode() { DisplayName = sf.DisplayName, Id = sf.Id, Type = WADTreeNode.NodeType.Subfile };
                 switch (sf.Type)
                 {
                     case SubfileType.Level:
@@ -43,44 +41,27 @@ namespace Spyro_Editor.Models
                         break;
                 }
             }
-            node.Children.Add(levels);
-            node.Children.Add(cutscenes);
-            node.Children.Add(flyovers);
-            node.Children.Add(overlays);
-            node.Children.Add(other);
-            Nodes.Add(node);
+            Nodes.Add(levels);
+            Nodes.Add(cutscenes);
+            Nodes.Add(flyovers);
+            Nodes.Add(overlays);
+            Nodes.Add(other);
         }
 
-        public WAD? GetWAD(byte id)
+        public void Unload()
         {
-            return WADs.Find(w => w.Id == id);
+            Nodes.Clear();
+            WAD = null;
         }
 
-        public Subfile? GetSubfile(byte wadId, byte id)
+        public WAD GetWAD()
         {
-            var wad = GetWAD(wadId);
-            if (wad is not null)
-            {
-                return wad.Subfiles.Find(s => s.Id == id);
-            }
-            return null;
+            return WAD!;
         }
-    }
 
-    public class WADTreeNode
-    {
-        public enum NodeType
+        public Subfile? GetSubfile(byte id)
         {
-            Root,
-            Group,
-            Subfile
+            return WAD!.Subfiles.Find(s => s.Id == id);
         }
-
-        public byte Id = 0;
-        public byte WADId = 0;
-        public bool IsExpanded = false;
-        public required string DisplayName;
-        public required NodeType Type;
-        public ObservableCollection<WADTreeNode> Children = new ObservableCollection<WADTreeNode>();
     }
 }

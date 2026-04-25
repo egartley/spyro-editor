@@ -9,12 +9,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Page.Resources>
-        <DataTemplate x:Key="WADTreeNodeTemplate" x:DataType="models:WADTreeNode">
+        <DataTemplate x:Key="WADTreeNodeIconTemplate" x:DataType="local:WADTreeNode">
+            <TreeViewItem ItemsSource="{x:Bind Children}" IsExpanded="{x:Bind IsExpanded}">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="{x:Bind Glyph}" />
+                    <TextBlock Margin="0,0,10,0" />
+                    <TextBlock Text="{x:Bind DisplayName}" />
+                </StackPanel>
+            </TreeViewItem>
+        </DataTemplate>
+        <DataTemplate x:Key="WADTreeNodeTemplate" x:DataType="local:WADTreeNode">
             <TreeViewItem ItemsSource="{x:Bind Children}" Content="{x:Bind DisplayName}" IsExpanded="{x:Bind IsExpanded}" />
         </DataTemplate>
         <local:WADTreeNodeTemplateSelector x:Key="WADTreeNodeTemplateSelector"
-            RootTemplate="{StaticResource WADTreeNodeTemplate}"
-            GroupTemplate="{StaticResource WADTreeNodeTemplate}"
+            GroupTemplate="{StaticResource WADTreeNodeIconTemplate}"
             SubfileTemplate="{StaticResource WADTreeNodeTemplate}" />
     </Page.Resources>
 
@@ -23,7 +31,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Text="WAD Browser" Margin="8,12,8,12" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+        <TextBlock x:Name="Title" Margin="8,12,8,12" Style="{ThemeResource BodyStrongTextBlockStyle}" />
         <TreeView x:Name="WADTree" Grid.Row="1" CanDragItems="False" CanReorderItems="False" ItemsSource="{x:Bind Model.Nodes}" ItemTemplateSelector="{StaticResource WADTreeNodeTemplateSelector}" ItemInvoked="WADTree_ItemInvoked" />
     </Grid>
 </Page>

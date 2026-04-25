@@ -7,15 +7,13 @@ namespace Spyro_Editor.Data
 {
     public class WAD : IBinaryObject
     {
-        public byte Id;
         public string Path;
         public string DisplayName;
         public List<Subfile> Subfiles = [];
         private Game Game;
 
-        public WAD(BinaryReader reader, string path, byte id)
+        public WAD(BinaryReader reader, string path)
         {
-            Id = id;
             Path = path;
             reader.BaseStream.Seek(0x100, SeekOrigin.Begin);
             uint magic = reader.ReadUInt32();
@@ -34,7 +32,7 @@ namespace Spyro_Editor.Data
                     DisplayName = "Spyro: Year of the Dragon (NTSC)";
                     break;
                 default:
-                    DisplayName = "UNKNOWN WAD";
+                    DisplayName = "(Unknown WAD)";
                     break;
             }
             reader.BaseStream.Seek(0, SeekOrigin.Begin);
@@ -58,7 +56,7 @@ namespace Spyro_Editor.Data
                     strikes = 0;
                     if (size > 0)
                     {
-                        Subfiles.Add(new Subfile(Game, Id, (byte)(index + 1), offset, size));
+                        Subfiles.Add(new Subfile(Game, (byte)(index + 1), offset, size));
                     }
                 }
                 index++;

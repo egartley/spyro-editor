@@ -8,16 +8,14 @@ namespace Spyro_Editor.Data
     public class Subfile : IBinaryObject
     {
         public byte Id;
-        public byte WADId;
         public uint Offset;
         public uint Size;
         public string DisplayName;
         public SubfileType Type;
 
-        public Subfile(Game game, byte wadId, byte id, uint offset, uint size)
+        public Subfile(Game game, byte id, uint offset, uint size)
         {
             Id = id;
-            WADId = wadId;
             Offset = offset;
             Size = size;
             DisplayName = $"{Id} - {GetDisplayName(game)}";
@@ -31,6 +29,7 @@ namespace Spyro_Editor.Data
 
         private string GetDisplayName(Game game)
         {
+            string defaultName = $"0x{Offset.ToString("X")}";
             Dictionary<byte, string> names;
             switch (game)
             {
@@ -44,7 +43,7 @@ namespace Spyro_Editor.Data
                     names = SubfileNames.Spyro3;
                     break;
                 default:
-                    return "UNKNOWN GAME";
+                    return defaultName;
             }
             if (names.TryGetValue(Id, out string? name))
             {
@@ -52,12 +51,20 @@ namespace Spyro_Editor.Data
             }
             else
             {
-                return $"0x{Offset.ToString("X")}";
+                return defaultName;
             }
         }
 
         private SubfileType GetType(Game game)
         {
+            /*
+             * https://github.com/egartley/noclip.website/blob/main/src/Spyro/tools/extractor.py
+            subfile_type_map = [
+                {"level": range(10, 79, 2), "cutscene": range(3, 7, 1), "starring": range(82, 102, 1)},
+                {"level": range(15, 72, 2), "cutscene": range(73, 96, 2), "starring": range(187, 197, 1)},
+                {"level": range(97, 170, 2), "cutscene": range(6, 67, 3), "starring": range(183, 195, 1)}
+            ]
+             */
             switch (game)
             {
                 case Game.Spyro1:
