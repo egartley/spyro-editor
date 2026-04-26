@@ -12,7 +12,6 @@ namespace Spyro_Editor.Views;
 
 public sealed partial class SubfileHexViewer : Page
 {
-    private string WADPath;
     private WindowId WindowId;
     private Subfile? Subfile;
 
@@ -21,16 +20,13 @@ public sealed partial class SubfileHexViewer : Page
         InitializeComponent();
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         HexViewer.AsciiEncoding = Encoding.UTF8;
-        WADPath = "";
         WindowId = windowId;
     }
 
-    public async void Load(string wadPath, Subfile subfile)
+    public async void Load(byte[] buffer, Subfile subfile)
     {
-        WADPath = wadPath;
+        Close();
         Subfile = subfile;
-        byte[] buffer = await Subfile.GetBuffer(WADPath);
-        HexViewer.Clear();
         HexViewer.LoadBytes(buffer);
         TotalSizeText.Text = $"Size: {ToPrettySize(Subfile.Size)}";
     }
@@ -52,7 +48,7 @@ public sealed partial class SubfileHexViewer : Page
         var file = await savePicker.PickSaveFileAsync();
         if (file is not null && Subfile is not null)
         {
-            byte[] buffer = await Subfile.GetBuffer(WADPath);
+            byte[] buffer = await Subfile.GetBuffer(false);
             await File.WriteAllBytesAsync(file.Path, buffer);
         }
     }

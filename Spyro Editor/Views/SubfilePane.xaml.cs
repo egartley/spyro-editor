@@ -6,7 +6,6 @@ namespace Spyro_Editor.Views
 {
     public sealed partial class SubfilePane : Page
     {
-        private string WADPath;
         private WindowId WindowId;
         private Subfile? Subfile;
         private SubfileHexViewer? HexViewer;
@@ -14,20 +13,25 @@ namespace Spyro_Editor.Views
         public SubfilePane(WindowId windowId)
         {
             InitializeComponent();
-            WADPath = "";
             WindowId = windowId;
         }
 
         public async void Load(string wadPath, Subfile subfile)
         {
-            WADPath = wadPath;
+            if (Subfile is not null)
+            {
+                Subfile.DeleteTemp();
+            }
             Subfile = subfile;
+
+            byte[] buffer = await Subfile.WriteTemp(wadPath);
 
             if (HexViewer is null)
             {
                 HexViewer = new SubfileHexViewer(WindowId);
             }
-            HexViewer.Load(wadPath, subfile);
+            HexViewer.Load(buffer, subfile);
+
             ContentFrame.Content = HexViewer;
         }
 
@@ -37,8 +41,11 @@ namespace Spyro_Editor.Views
             {
                 HexViewer.Close();
             }
+            if (Subfile is not null)
+            {
+                Subfile.DeleteTemp();
+            }
             Subfile = null;
-            WADPath = "";
             ContentFrame.Content = null;
         }
 

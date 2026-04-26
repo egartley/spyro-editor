@@ -10,12 +10,27 @@ namespace Spyro_Editor.Constants
         // Spyro4 (maybe some day...)
     }
 
+    public enum GameVariation
+    {
+        Spyro1_NTSC,
+        Spyro2_NTSC,
+        Spyro3_NTSC_1_0,
+        Spyro3_NTSC_1_1,
+        Spyro1_PAL,
+        Spyro2_PAL,
+        Spyro3_PAL
+    }
+
     public enum WADSignature
     {
-        // uint32 at 0x100
         Spyro1_NTSC = 39424000,
         Spyro2_NTSC = 32681984,
-        Spyro3_NTSC = 25331712
+        Spyro3_NTSC_1_0 = 102907904,
+        Spyro3_NTSC_1_1 = 102957056,
+        Spyro1_PAL = 67569664,
+        Spyro2_PAL = 51075072,
+        Spyro3_PAL = 34547712
+        // maybe add demos?
     }
 
     public enum SubfileType
@@ -29,7 +44,9 @@ namespace Spyro_Editor.Constants
 
     public static class SubfileNames
     {
-        public static Dictionary<byte, string> Spyro1 = new Dictionary<byte, string>
+        // TODO: different maps for nstc vs pal and 3 1.0 vs 1.1
+
+        public static Dictionary<short, string> Spyro1_NSTC = new Dictionary<short, string>
         {
             [4] = "Title Screen",
             [5] = "Introduction",
@@ -92,7 +109,7 @@ namespace Spyro_Editor.Constants
             [102] = "Jacques"
         };
 
-        public static Dictionary<byte, string> Spyro2 = new Dictionary<byte, string>
+        public static Dictionary<short, string> Spyro2_NSTC = new Dictionary<short, string>
         {
             [16] = "Summer Forest",
             [18] = "Glimmer",
@@ -137,7 +154,7 @@ namespace Spyro_Editor.Constants
             [96] = "Title Screen"
         };
 
-        public static Dictionary<byte, string> Spyro3 = new Dictionary<byte, string>
+        public static Dictionary<short, string> Spyro3_NSTC_1_1 = new Dictionary<short, string>
         {
             [7] = "Title Screen",
             [10] = "An Evil Plot Unfolds...",

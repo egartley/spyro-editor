@@ -59,7 +59,7 @@ namespace Spyro_Editor.Models
             return WAD!;
         }
 
-        public Subfile? GetSubfile(byte id)
+        public Subfile? GetSubfile(short id)
         {
             return WAD!.Subfiles.Find(s => s.Id == id);
         }

@@ -1,58 +1,102 @@
 ﻿using Spyro_Editor.Constants;
 using Spyro_Editor.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 namespace Spyro_Editor.Data
 {
     public class Subfile : IBinaryObject
     {
-        public byte Id;
+        public short Id;
         public uint Offset;
         public uint Size;
         public string DisplayName;
         public SubfileType Type;
+        private string TempFileName;
+        private StorageFolder TempFolder;
 
-        public Subfile(Game game, byte id, uint offset, uint size)
+        public Subfile(Game game, short id, uint offset, uint size)
         {
             Id = id;
             Offset = offset;
             Size = size;
             DisplayName = $"{Id} - {GetDisplayName(game)}";
             Type = GetType(game);
+            TempFileName = $"sf{Id}.bin";
+            TempFolder = ApplicationData.Current.TemporaryFolder;
         }
 
         public void Read(BinaryReader reader)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public async Task<byte[]> GetBuffer(string wadPath)
+        public async Task<byte[]> WriteTemp(string wadPath)
         {
-            byte[] buffer = new byte[Size];
-            using (var stream = File.Open(wadPath, FileMode.Open))
-            {
-                stream.Seek(Offset, SeekOrigin.Begin);
-                await stream.ReadExactlyAsync(buffer, 0, (int)Size);
-            }
+            StorageFile tempFile = await TempFolder.CreateFileAsync(TempFileName, CreationCollisionOption.ReplaceExisting);
+            byte[] buffer = await GetBuffer(true, wadPath);
+            await FileIO.WriteBytesAsync(tempFile, buffer);
             return buffer;
+        }
+
+        public async void DeleteTemp()
+        {
+            StorageFile file = await GetTempFile();
+            await file.DeleteAsync();
+        }
+
+        public async Task<byte[]> GetBuffer(bool readFromWAD, string wadPath = "")
+        {
+            if (!readFromWAD)
+            {
+                StorageFile tempFile = await GetTempFile();
+                var buffer = await FileIO.ReadBufferAsync(tempFile);
+                byte[] data = new byte[buffer.Length];
+                using (var reader = DataReader.FromBuffer(buffer))
+                {
+                    reader.ReadBytes(data);
+                }
+                return data;
+            }
+            else if (wadPath.Length > 0)
+            {
+                byte[] buffer = new byte[Size];
+                using (var stream = File.Open(wadPath, FileMode.Open))
+                {
+                    stream.Seek(Offset, SeekOrigin.Begin);
+                    await stream.ReadExactlyAsync(buffer, 0, (int)Size);
+                }
+                return buffer;
+            }
+            else
+            {
+                return Array.Empty<byte>();
+            }
+        }
+
+        private async Task<StorageFile> GetTempFile()
+        {
+            return await TempFolder.GetFileAsync(TempFileName);
         }
 
         private string GetDisplayName(Game game)
         {
             string defaultName = $"0x{Offset.ToString("X")}";
-            Dictionary<byte, string> names;
+            Dictionary<short, string> names;
             switch (game)
             {
                 case Game.Spyro1:
-                    names = SubfileNames.Spyro1;
+                    names = SubfileNames.Spyro1_NSTC;
                     break;
                 case Game.Spyro2:
-                    names = SubfileNames.Spyro2;
+                    names = SubfileNames.Spyro2_NSTC;
                     break;
                 case Game.Spyro3:
-                    names = SubfileNames.Spyro3;
+                    names = SubfileNames.Spyro3_NSTC_1_1;
                     break;
                 default:
                     return defaultName;

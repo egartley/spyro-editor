@@ -8,7 +8,7 @@ namespace Spyro_Editor.Views
 {
     public sealed partial class WADBrowser : Page
     {
-        private byte? LastLoadedSubfileId;
+        private short LastLoadedSubfileId = -1;
         private string NoWADText;
         private MainWindow Main;
         private WADModel Model;
@@ -32,7 +32,7 @@ namespace Spyro_Editor.Views
         {
             Title.Text = NoWADText;
             Model.Unload();
-            LastLoadedSubfileId = null;
+            LastLoadedSubfileId = -1;
         }
 
         private void WADTree_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
@@ -41,7 +41,7 @@ namespace Spyro_Editor.Views
             if (node is not null && node.Type == WADTreeNode.NodeType.Subfile)
             {
                 Subfile sf = Model.GetSubfile(node.Id)!;
-                if (LastLoadedSubfileId is null || LastLoadedSubfileId != sf.Id)
+                if (LastLoadedSubfileId == -1 || LastLoadedSubfileId != sf.Id)
                 {
                     Main.LoadSubfile(Model.GetWAD().Path, sf);
                     LastLoadedSubfileId = sf.Id;
@@ -58,7 +58,7 @@ namespace Spyro_Editor.Views
             Subfile
         }
 
-        public byte Id = 0;
+        public short Id = 0;
         public bool IsExpanded = false;
         public string Glyph = "";
         public required string DisplayName;
