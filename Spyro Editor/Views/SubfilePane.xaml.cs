@@ -1,18 +1,21 @@
+using Microsoft.UI;
 using Microsoft.UI.Xaml.Controls;
 using Spyro_Editor.Data;
-using System.IO;
 
 namespace Spyro_Editor.Views
 {
     public sealed partial class SubfilePane : Page
     {
-        private string? WADPath;
+        private string WADPath;
+        private WindowId WindowId;
         private Subfile? Subfile;
         private SubfileHexViewer? HexViewer;
 
-        public SubfilePane()
+        public SubfilePane(WindowId windowId)
         {
             InitializeComponent();
+            WADPath = "";
+            WindowId = windowId;
         }
 
         public async void Load(string wadPath, Subfile subfile)
@@ -20,18 +23,11 @@ namespace Spyro_Editor.Views
             WADPath = wadPath;
             Subfile = subfile;
 
-            byte[] buffer = new byte[Subfile.Size];
-            using (var stream = File.Open(WADPath, FileMode.Open))
-            {
-                stream.Seek(Subfile.Offset, SeekOrigin.Begin);
-                await stream.ReadExactlyAsync(buffer, 0, (int)Subfile.Size);
-            }
-
             if (HexViewer is null)
             {
-                HexViewer = new SubfileHexViewer();
+                HexViewer = new SubfileHexViewer(WindowId);
             }
-            HexViewer.Load(buffer);
+            HexViewer.Load(wadPath, subfile);
             ContentFrame.Content = HexViewer;
         }
 

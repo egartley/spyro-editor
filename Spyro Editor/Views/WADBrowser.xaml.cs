@@ -8,6 +8,7 @@ namespace Spyro_Editor.Views
 {
     public sealed partial class WADBrowser : Page
     {
+        private byte? LastLoadedSubfileId;
         private string NoWADText;
         private MainWindow Main;
         private WADModel Model;
@@ -31,6 +32,7 @@ namespace Spyro_Editor.Views
         {
             Title.Text = NoWADText;
             Model.Unload();
+            LastLoadedSubfileId = null;
         }
 
         private void WADTree_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
@@ -39,7 +41,11 @@ namespace Spyro_Editor.Views
             if (node is not null && node.Type == WADTreeNode.NodeType.Subfile)
             {
                 Subfile sf = Model.GetSubfile(node.Id)!;
-                Main.LoadSubfile(Model.GetWAD().Path, sf);
+                if (LastLoadedSubfileId is null || LastLoadedSubfileId != sf.Id)
+                {
+                    Main.LoadSubfile(Model.GetWAD().Path, sf);
+                    LastLoadedSubfileId = sf.Id;
+                }
             }
         }
     }
@@ -68,7 +74,7 @@ namespace Spyro_Editor.Views
 
         protected override DataTemplate? SelectTemplateCore(object item)
         {
-            var node = (WADTreeNode) item;
+            var node = (WADTreeNode)item;
 
             switch (node.Type)
             {

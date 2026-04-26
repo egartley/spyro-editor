@@ -2,6 +2,7 @@
 using Spyro_Editor.Interfaces;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Spyro_Editor.Data
 {
@@ -25,6 +26,17 @@ namespace Spyro_Editor.Data
         public void Read(BinaryReader reader)
         {
             throw new System.NotImplementedException();
+        }
+
+        public async Task<byte[]> GetBuffer(string wadPath)
+        {
+            byte[] buffer = new byte[Size];
+            using (var stream = File.Open(wadPath, FileMode.Open))
+            {
+                stream.Seek(Offset, SeekOrigin.Begin);
+                await stream.ReadExactlyAsync(buffer, 0, (int)Size);
+            }
+            return buffer;
         }
 
         private string GetDisplayName(Game game)

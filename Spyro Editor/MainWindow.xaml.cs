@@ -72,7 +72,7 @@ namespace Spyro_Editor
         {
             if (SubfilePane is null)
             {
-                SubfilePane = new SubfilePane();
+                SubfilePane = new SubfilePane(AppWindow.Id);
             }
             SubfilePane.Load(wadPath, subfile);
 

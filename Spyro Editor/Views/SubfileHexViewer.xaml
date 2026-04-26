@@ -10,6 +10,18 @@
     mc:Ignorable="d">
 
     <Grid>
-        <hex:BetterHexViewer x:Name="HexViewer" ColumnGroupSize="Four" FullWidth="True" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <hex:BetterHexViewer x:Name="HexViewer" Margin="0,0,0,12" ColumnGroupSize="Four" FullWidth="True" />
+        <Grid Grid.Row="1" Padding="8" CornerRadius="4" Background="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="ExportButton" Content="Export" Click="ExportButton_Click" />
+            <TextBlock x:Name="TotalSizeText" Grid.Column="1" VerticalAlignment="Center" />
+        </Grid>
     </Grid>
 </Page>

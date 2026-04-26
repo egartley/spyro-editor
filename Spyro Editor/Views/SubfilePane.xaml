@@ -14,7 +14,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <SelectorBar x:Name="SelectorBar" Margin="0,0,0,12" Padding="0" SelectionChanged="SelectorBar_SelectionChanged">
-            <SelectorBarItem x:Name="SelectorBarItemHexViewer" Text="Hex Viewer" IsSelected="True" />
+            <SelectorBarItem x:Name="SelectorBarItemHexViewer" Text="Raw Data" IsSelected="True" />
             <SelectorBarItem x:Name="SelectorBarItemHelixView" Text="3D View" />
         </SelectorBar>
         <Frame x:Name="ContentFrame" Grid.Row="1" IsNavigationStackEnabled="False" />
