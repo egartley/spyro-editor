@@ -1,5 +1,4 @@
 ﻿using Spyro_Editor.Constants;
-using Spyro_Editor.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +8,7 @@ using Windows.Storage.Streams;
 
 namespace Spyro_Editor.Data
 {
-    public class Subfile : IBinaryObject
+    public class Subfile
     {
         public short Id;
         public uint Offset;
@@ -17,7 +16,6 @@ namespace Spyro_Editor.Data
         public string DisplayName;
         public SubfileType Type;
         private string TempFileName;
-        private StorageFolder TempFolder;
 
         public Subfile(Game game, short id, uint offset, uint size)
         {
@@ -27,23 +25,16 @@ namespace Spyro_Editor.Data
             DisplayName = $"{Id} - {GetDisplayName(game)}";
             Type = GetType(game);
             TempFileName = $"sf{Id}.bin";
-            TempFolder = ApplicationData.Current.TemporaryFolder;
         }
 
-        public void Read(BinaryReader reader)
+        public async Task WriteTemp(string wadPath)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<byte[]> WriteTemp(string wadPath)
-        {
-            StorageFile tempFile = await TempFolder.CreateFileAsync(TempFileName, CreationCollisionOption.ReplaceExisting);
+            StorageFile tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(TempFileName, CreationCollisionOption.ReplaceExisting);
             byte[] buffer = await GetBuffer(true, wadPath);
             await FileIO.WriteBytesAsync(tempFile, buffer);
-            return buffer;
         }
 
-        public async void DeleteTemp()
+        public async Task DeleteTemp()
         {
             StorageFile file = await GetTempFile();
             await file.DeleteAsync();
@@ -78,9 +69,15 @@ namespace Spyro_Editor.Data
             }
         }
 
+        public async Task<Stream> GetTempFileStream()
+        {
+            StorageFile tempFile = await GetTempFile();
+            return await tempFile.OpenStreamForReadAsync();
+        }
+
         private async Task<StorageFile> GetTempFile()
         {
-            return await TempFolder.GetFileAsync(TempFileName);
+            return await ApplicationData.Current.TemporaryFolder.GetFileAsync(TempFileName);
         }
 
         private string GetDisplayName(Game game)

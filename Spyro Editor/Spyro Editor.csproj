@@ -14,7 +14,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Views\SubfileHexViewer.xaml" />
+    <None Remove="Views\HelixViewer.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,12 +40,18 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BetterHexViewer.WinUI3" Version="1.2.1" />
-    <PackageReference Include="HelixToolkit" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1721" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260416003" />
+    <PackageReference Include="HelixToolkit.SharpDX.Core" Version="2.27.3" />
+    <PackageReference Include="HelixToolkit.WinUI" Version="2.27.3" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1839" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\SubfileHexViewer.xaml">
+    <Page Update="Views\HelixViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\HexDataViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
+using Spyro_Editor.Contexts;
 using Spyro_Editor.Data;
 using Spyro_Editor.Views;
 using System;
@@ -14,8 +15,6 @@ namespace Spyro_Editor
     {
         private Version Version;
         private WADBrowser WADBrowser;
-        private GetStartedPane GetStartedPane;
-        private SubfilePane? SubfilePane;
 
         public MainWindow()
         {
@@ -25,10 +24,9 @@ namespace Spyro_Editor
             SetTitleBar(MainTitleBar);
 
             WADBrowser = new WADBrowser(this);
-            GetStartedPane = new GetStartedPane(this);
 
             MainSplitView.Pane = WADBrowser;
-            MainSplitView.Content = GetStartedPane;
+            SplitViewFrame.Navigate(typeof(GetStartedPane), new GetStartedContext(this, false));
         }
 
         public async void OpenWAD()
@@ -51,34 +49,21 @@ namespace Spyro_Editor
                     }
                 }
                 WADBrowser.Load(wad);
-                GetStartedPane.OnWADLoaded();
+                SplitViewFrame.Navigate(typeof(GetStartedPane), new GetStartedContext(this, true));
+                CloseWADFlyoutItem.IsEnabled = true;
             }
         }
 
         private void CloseWAD()
         {
-            if (SubfilePane is not null)
-            {
-                SubfilePane.Close();
-                SubfilePane.Visibility = Visibility.Collapsed;
-            }
+            SplitViewFrame.Navigate(typeof(GetStartedPane), new GetStartedContext(this, false));
             WADBrowser.Unload();
-            GetStartedPane.OnWADClosed();
-            GetStartedPane.Visibility = Visibility.Visible;
-            MainSplitView.Content = GetStartedPane;
+            CloseWADFlyoutItem.IsEnabled = false;
         }
 
         public void LoadSubfile(string wadPath, Subfile subfile)
         {
-            if (SubfilePane is null)
-            {
-                SubfilePane = new SubfilePane(AppWindow.Id);
-            }
-            SubfilePane.Load(wadPath, subfile);
-
-            GetStartedPane.Visibility = Visibility.Collapsed;
-            SubfilePane.Visibility = Visibility.Visible;
-            MainSplitView.Content = SubfilePane;
+            SplitViewFrame.Navigate(typeof(SubfilePane), new SubfilePaneContext(wadPath, subfile, AppWindow.Id));
         }
 
         private void OpenWADFlyoutItem_Click(object sender, RoutedEventArgs e)
@@ -98,11 +83,6 @@ namespace Spyro_Editor
                 FileName = "https://github.com/egartley/spyro-editor",
                 UseShellExecute = true
             });
-        }
-
-        private void SettingsFlyoutItem_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private async void AboutFlyoutItem_Click(object sender, RoutedEventArgs e)

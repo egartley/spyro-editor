@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Spyro_Editor.Views.HelixViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Spyro_Editor.Views"
+    xmlns:helix="using:HelixToolkit.WinUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+        <helix:Viewport3DX x:Name="Viewport" IsMoveEnabled="True" IsChangeFieldOfViewEnabled="False">
+            <helix:MeshGeometryModel3D Geometry="{x:Bind Model.Mesh}" Material="{x:Bind Model.Material}" />
+        </helix:Viewport3DX>
+    </Grid>
+</Page>

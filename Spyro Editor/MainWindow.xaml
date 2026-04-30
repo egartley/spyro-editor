@@ -23,24 +23,24 @@
         <TitleBar x:Name="MainTitleBar" Title="Spyro Editor" />
         <MenuBar Grid.Row="1">
             <MenuBarItem Title="File">
-                <MenuFlyoutItem Text="Open..." Click="OpenWADFlyoutItem_Click">
+                <MenuFlyoutItem x:Name="OpenWADFlyoutItem" Text="Open..." Click="OpenWADFlyoutItem_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="O" />
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
                 <MenuFlyoutSeparator />
-                <MenuFlyoutItem Text="Close" Click="CloseWADFlyoutItem_Click">
+                <MenuFlyoutItem x:Name="CloseWADFlyoutItem" Text="Close" IsEnabled="False" Click="CloseWADFlyoutItem_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="W" />
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
                 <MenuFlyoutSeparator />
-                <MenuFlyoutItem Text="Save">
+                <MenuFlyoutItem x:Name="SaveWADFlyoutItem" Text="Save" IsEnabled="False">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="S" />
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Save As...">
+                <MenuFlyoutItem x:Name="SaveAsWADFlyoutItem" Text="Save As..." IsEnabled="False">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control,Shift" Key="S" />
                     </MenuFlyoutItem.KeyboardAccelerators>
@@ -49,7 +49,7 @@
                 <MenuFlyoutItem Text="Exit" Click="ExitFlyoutItem_Click" />
             </MenuBarItem>
             <MenuBarItem Title="Edit">
-                <MenuFlyoutItem Text="Settings" Click="SettingsFlyoutItem_Click" />
+                <MenuFlyoutItem Text="Settings" IsEnabled="False" />
             </MenuBarItem>
             <MenuBarItem Title="Help">
                 <MenuFlyoutItem Text="View on GitHub..." Click="OpenGitHubFlyoutItem_Click" />
@@ -57,6 +57,8 @@
             </MenuBarItem>
         </MenuBar>
 
-        <SplitView x:Name="MainSplitView" Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" Margin="12,4,12,12" CornerRadius="4" PaneBackground="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}" />
+        <SplitView x:Name="MainSplitView" Grid.Row="2" IsPaneOpen="True" DisplayMode="Inline" Margin="12,4,12,12" CornerRadius="4" PaneBackground="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}">
+            <Frame x:Name="SplitViewFrame" IsNavigationStackEnabled="False" />
+        </SplitView>
     </Grid>
 </Window>

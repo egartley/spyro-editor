@@ -1,5 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+using Spyro_Editor.Contexts;
 
 namespace Spyro_Editor.Views
 {
@@ -7,12 +9,11 @@ namespace Spyro_Editor.Views
     {
         private string NoWADMessage;
         private string NoSubfileMessage;
-        private MainWindow Main;
+        private MainWindow? Main;
 
-        public GetStartedPane(MainWindow main)
+        public GetStartedPane()
         {
             InitializeComponent();
-            Main = main;
             NoWADMessage = "Select a WAD file to get started";
             NoSubfileMessage = "Select a subfile to view here";
             Message.Text = NoWADMessage;
@@ -30,9 +31,26 @@ namespace Spyro_Editor.Views
             Message.Text = NoWADMessage;
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter is GetStartedContext context)
+            {
+                Main = context.MainWindow;
+                if (context.IsWADOpen)
+                {
+                    OnWADLoaded();
+                }
+                else
+                {
+                    OnWADClosed();
+                }
+            }
+            base.OnNavigatedTo(e);
+        }
+
         private void OpenWADButton_Click(object sender, RoutedEventArgs e)
         {
-            Main.OpenWAD();
+            Main!.OpenWAD();
         }
     }
 }
