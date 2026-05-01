@@ -26,20 +26,20 @@ namespace Spyro_Editor.Models
 
         public async Task Load(Subfile subfile)
         {
-            LevelData data = new LevelData();
+            Level level = new Level();
             using (var stream = await subfile.GetTempFileStream())
             {
                 using (var reader = new BinaryReader(stream))
                 {
-                    data.Read(reader);
+                    level.Read(reader);
                 }
             }
-            data.Build();
+            LevelModel data = new LevelModel(level.Ground!);
             Mesh = new MeshGeometry3D
             {
-                Positions = data.Vertices,
-                Indices = data.Indices,
-                Colors = data.Colors
+                Positions = data.LowVertices,
+                Indices = data.LowIndices,
+                Colors = data.LowColors
             };
         }
 

@@ -4,14 +4,14 @@ using System.IO;
 
 namespace Spyro_Editor.Data.Level
 {
+    /// <summary>
+    /// The "ground" section of a level subfile. Contains both the visible geometry and collision data
+    /// </summary>
+    /// <seealso cref="Part"/>
+    /// <seealso cref="PartHeader"/>
     public class Ground : IBinaryObject
     {
-        public Part[] Parts;
-
-        public Ground()
-        {
-            Parts = [];
-        }
+        public Part[] Parts = [];
 
         public void Read(BinaryReader reader)
         {
@@ -38,6 +38,9 @@ namespace Spyro_Editor.Data.Level
         }
     }
 
+    /// <summary>
+    /// A 20-byte header that describes a <see cref="Part"/>
+    /// </summary>
     public class PartHeader : IBinaryObject
     {
         public short x;
@@ -72,25 +75,22 @@ namespace Spyro_Editor.Data.Level
         }
     }
 
+    /// <summary>
+    /// A part of the visible geometry of a level. Contains data for both LODs
+    /// </summary>
     public class Part : IBinaryObject
     {
-        public int[][] LowVertices;
-        public int[][] HighVertices;
-        public byte[][] LowColors;
-        public byte[][] HighColors;
-        public int[][] LowPolys;
-        public byte[][] HighPolys;
+        public int[][] LowVertices = [];
+        public int[][] HighVertices = [];
+        public byte[][] LowColors = [];
+        public byte[][] HighColors = [];
+        public int[][] LowPolys = [];
+        public byte[][] HighPolys = [];
         private PartHeader Header;
 
         public Part(PartHeader header)
         {
             Header = header;
-            LowVertices = [];
-            HighVertices = [];
-            LowColors = [];
-            HighColors = [];
-            LowPolys = [];
-            HighPolys = [];
         }
 
         public void Read(BinaryReader reader)

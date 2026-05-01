@@ -13,13 +13,11 @@ namespace Spyro_Editor
 {
     public sealed partial class MainWindow : Window
     {
-        private Version Version;
         private WADBrowser WADBrowser;
 
         public MainWindow()
         {
             InitializeComponent();
-            Version = Assembly.GetEntryAssembly()!.GetName().Version!;
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(MainTitleBar);
 
@@ -87,11 +85,11 @@ namespace Spyro_Editor
 
         private async void AboutFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new ContentDialog()
+            ContentDialog dialog = new()
             {
                 XamlRoot = rootGrid.XamlRoot,
                 Title = "Spyro Editor",
-                Content = $"Version {Version.ToString()}",
+                Content = $"Version {App.Version}",
                 CloseButtonText = "Ok"
             };
             await dialog.ShowAsync();

@@ -4,21 +4,21 @@ namespace Spyro_Editor.Utils
 {
     public class TextureDecode
     {
-        public static byte[] DecodeTexture(VRAM vram, TextureHeader header)
+        public static byte[] Decode(VRAM vram, TextureHeader header)
         {
-            byte[] rgba = new byte[header.size * header.size * 4];
-            if (header.m == 4)
+            byte[] rgba = new byte[header.Size * header.Size * 4];
+            if (header.M == 4)
             {
-                int x4 = header.x4 >> 2;
-                byte[][] clut = GetCLUT(vram, header.pageX, header.pageY, 16);
-                for (int y = 0; y < header.size; y++)
+                int x4 = header.X4 >> 2;
+                byte[][] clut = GetCLUT(vram, header.PageX, header.PageY, 16);
+                for (int y = 0; y < header.Size; y++)
                 {
-                    for (int x = 0; x < header.size / 4; x++)
+                    for (int x = 0; x < header.Size / 4; x++)
                     {
-                        ushort word = vram.GetWord(x4 + x, header.y4 + y);
+                        ushort word = vram.GetWord(x4 + x, header.Y4 + y);
                         for (byte nib = 0; nib < 4; nib++)
                         {
-                            int i = (y * header.size + (x * 4 + nib)) * 4;
+                            int i = (y * header.Size + (x * 4 + nib)) * 4;
                             byte[] pixel = clut[(word >> (nib * 4)) & 15];
                             rgba[i] = pixel[0];
                             rgba[i + 1] = pixel[1];
@@ -28,24 +28,24 @@ namespace Spyro_Editor.Utils
                     }
                 }
             }
-            else if (header.m == 8)
+            else if (header.M == 8)
             {
-                int x4 = header.x4 >> 1;
-                byte[][] clut = GetCLUT(vram, header.pageX, header.pageY, 256);
-                for (int y = 0; y < header.size; y++)
+                int x4 = header.X4 >> 1;
+                byte[][] clut = GetCLUT(vram, header.PageX, header.PageY, 256);
+                for (int y = 0; y < header.Size; y++)
                 {
-                    for (int x = 0; x < header.size / 2; x++)
+                    for (int x = 0; x < header.Size / 2; x++)
                     {
-                        ushort word = vram.GetWord(x4 + x, header.y4 + y);
+                        ushort word = vram.GetWord(x4 + x, header.Y4 + y);
 
-                        int i1 = (y * header.size + (x * 2)) * 4;
+                        int i1 = (y * header.Size + (x * 2)) * 4;
                         byte[] pixel1 = clut[word & 256];
                         rgba[i1] = pixel1[0];
                         rgba[i1 + 1] = pixel1[1];
                         rgba[i1 + 2] = pixel1[2];
                         rgba[i1 + 3] = pixel1[3];
 
-                        int i2 = (y * header.size + (x * 2 + 1)) * 4;
+                        int i2 = (y * header.Size + (x * 2 + 1)) * 4;
                         byte[] pixel2 = clut[(word >> 8) & 255];
                         rgba[i2] = pixel2[0];
                         rgba[i2 + 1] = pixel2[1];
@@ -56,12 +56,12 @@ namespace Spyro_Editor.Utils
             }
             else
             {
-                for (int y = 0; y < header.size; y++)
+                for (int y = 0; y < header.Size; y++)
                 {
-                    for (int x = 0; x < header.size; x++)
+                    for (int x = 0; x < header.Size; x++)
                     {
-                        ushort word = vram.GetWord(header.x4 + x, header.y4 + y);
-                        int i = (y * header.size + x) * 4;
+                        ushort word = vram.GetWord(header.X4 + x, header.Y4 + y);
+                        int i = (y * header.Size + x) * 4;
                         byte[] pixel = GetColorsByWord(word);
                         rgba[i] = pixel[0];
                         rgba[i + 1] = pixel[1];
@@ -73,35 +73,41 @@ namespace Spyro_Editor.Utils
             return rgba;
         }
 
-        public static byte[] RotateTexture(byte[] rgba, TextureHeader header)
+        public static byte[] Rotate(byte[] rgba, TextureHeader header)
         {
+            if (header.Rotation == 0)
+            {
+                return rgba;
+            }
+
             byte[] rotated = new byte[rgba.Length];
 
-            switch (header.rotation)
+            switch (header.Rotation)
             {
-                case 0:
-                    return rgba;
                 case 1:
-                    rotated = Rotate90(rgba, header.size);
+                    rotated = Mirror(Flip(Turn(rgba, header.Size), header.Size), header.Size);
                     break;
                 case 2:
-                    rotated = Rotate90(Rotate90(Rotate90(rgba, header.size), header.size), header.size);
+                    rotated = Turn(Turn(rgba, header.Size), header.Size);
                     break;
                 case 3:
-                    rotated = Rotate90(Rotate90(rgba, header.size), header.size);
+                    rotated = Mirror(Flip(rgba, header.Size), header.Size);
                     break;
                 case 4:
-                    rotated = Rotate90(MirrorX(rgba, header.size), header.size);
+                    rotated = Mirror(Turn(rgba, header.Size), header.Size);
                     break;
                 case 5:
-                    rotated = MirrorX(rgba, header.size);
+                    rotated = Mirror(rgba, header.Size);
                     break;
                 case 6:
-                    rotated = Rotate90(Rotate90(Rotate90(MirrorX(rgba, header.size), header.size), header.size), header.size);
+                    rotated = Flip(Turn(rgba, header.Size), header.Size);
                     break;
                 case 7:
-                    rotated = Rotate90(Rotate90(rgba, header.size), header.size);
+                    rotated = Flip(rgba, header.Size);
                     break;
+                default:
+                    // shouldn't get here!
+                    return rgba;
             }
 
             return rotated;
@@ -127,7 +133,7 @@ namespace Spyro_Editor.Utils
             ];
         }
 
-        private static byte[] Rotate90(byte[] rgba, int size)
+        private static byte[] Turn(byte[] rgba, int size)
         {
             byte[] rotated = new byte[rgba.Length];
             for (int y = 0; y < size; y++)
@@ -145,7 +151,7 @@ namespace Spyro_Editor.Utils
             return rotated;
         }
 
-        private static byte[] MirrorX(byte[] rgba, int size)
+        private static byte[] Mirror(byte[] rgba, int size)
         {
             byte[] rotated = new byte[rgba.Length];
             for (int y = 0; y < size; y++)
@@ -154,6 +160,24 @@ namespace Spyro_Editor.Utils
                 {
                     int s = (y * size + x) * 4;
                     int d = (y * size + (size - 1 - x)) * 4;
+                    rotated[d] = rgba[s];
+                    rotated[d + 1] = rgba[s + 1];
+                    rotated[d + 2] = rgba[s + 2];
+                    rotated[d + 3] = rgba[s + 3];
+                }
+            }
+            return rotated;
+        }
+
+        private static byte[] Flip(byte[] rgba, int size)
+        {
+            byte[] rotated = new byte[rgba.Length];
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    int s = (y * size + x) * 4;
+                    int d = ((size - 1 - y) * size + x) * 4;
                     rotated[d] = rgba[s];
                     rotated[d + 1] = rgba[s + 1];
                     rotated[d + 2] = rgba[s + 2];

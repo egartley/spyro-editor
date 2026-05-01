@@ -10,7 +10,7 @@
     mc:Ignorable="d">
 
     <Grid>
-        <helix:Viewport3DX x:Name="Viewport">
+        <helix:Viewport3DX x:Name="Viewport" FrameRate="60.0" IsInertiaEnabled="False">
             <helix:MeshGeometryModel3D Geometry="{x:Bind Model.Mesh, Mode=OneWay}" Material="{x:Bind Model.Material, Mode=OneWay}" />
         </helix:Viewport3DX>
     </Grid>
