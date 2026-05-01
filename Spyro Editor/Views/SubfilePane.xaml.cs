@@ -1,4 +1,5 @@
 using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
@@ -25,8 +26,12 @@ namespace Spyro_Editor.Views
             Subfile = subfile;
 
             await Subfile.WriteTemp(wadPath);
+            if (Subfile.Type != Constants.SubfileType.Level)
+            {
+                HelixViewSelectorItem.Visibility = Visibility.Collapsed;
+            }
 
-            Navigate(0);
+            Navigate(0, true);
         }
 
         public async void Close()
@@ -36,20 +41,23 @@ namespace Spyro_Editor.Views
             await Subfile!.DeleteTemp();
         }
 
-        private void Navigate(int index)
+        private void Navigate(int index, bool bottomTransition = false)
         {
             Type pageType;
             switch (index)
             {
                 case 0:
-                    pageType = typeof(HexDataViewer);
+                    pageType = typeof(SubfileOverview);
+                    break;
+                case 1:
+                    pageType = typeof(HelixViewer);
                     break;
                 default:
-                    pageType = typeof(HelixViewer);
+                    pageType = typeof(HexDataViewer);
                     break;
             }
             var effect = index - SelectedIndex > 0 ? SlideNavigationTransitionEffect.FromRight : SlideNavigationTransitionEffect.FromLeft;
-            ContentFrame.Navigate(pageType, new SubfileContext(Subfile!, (WindowId)WindowId!), new SlideNavigationTransitionInfo() { Effect = effect });
+            ContentFrame.Navigate(pageType, new SubfileContext(Subfile!, (WindowId)WindowId!), new SlideNavigationTransitionInfo() { Effect = bottomTransition ? SlideNavigationTransitionEffect.FromBottom : effect });
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

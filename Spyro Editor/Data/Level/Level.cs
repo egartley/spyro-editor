@@ -9,7 +9,7 @@ namespace Spyro_Editor.Data.Level
     /// </summary>
     public class Level : IBinaryObject
     {
-        private byte[][]? Textures;
+        public byte[][]? Textures;
         public Ground? Ground;
 
         public void Read(BinaryReader reader)

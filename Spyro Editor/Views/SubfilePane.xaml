@@ -13,10 +13,16 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <SelectorBar x:Name="SelectorBar" Margin="0,0,0,12" Padding="0" SelectionChanged="SelectorBar_SelectionChanged">
-            <SelectorBarItem x:Name="HexDataViewSelectorItem" Text="Raw Data" IsSelected="True" />
-            <SelectorBarItem x:Name="HelixViewSelectorItem" Text="3D View" />
-        </SelectorBar>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="0,0,0,12" CornerRadius="4" Background="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}">
+            <SelectorBar x:Name="SelectorBar" SelectionChanged="SelectorBar_SelectionChanged">
+                <SelectorBarItem x:Name="OverviewSelectorItem" Padding="24,8" Text="Overview" IsSelected="True" />
+                <SelectorBarItem x:Name="HelixViewSelectorItem" Padding="24,8" Text="3D View" />
+                <SelectorBarItem x:Name="HexDataViewSelectorItem" Padding="24,8" Text="Raw Data" />
+            </SelectorBar>
+        </StackPanel>
         <Frame x:Name="ContentFrame" Grid.Row="1" IsNavigationStackEnabled="False" />
     </Grid>
 </Page>
