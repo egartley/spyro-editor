@@ -2,19 +2,25 @@
 using HelixToolkit.WinUI;
 using Spyro_Editor.Data;
 using Spyro_Editor.Data.Level;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Spyro_Editor.Models
 {
-    public class HelixModel
+    public partial class HelixModel : INotifyPropertyChanged
     {
         public Material Material;
-        public MeshGeometry3D Mesh;
+        public MeshGeometry3D? Mesh
+        {
+            get;
+            set { field = value; OnPropertyChanged(); }
+        }
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public HelixModel()
         {
-            Mesh = new MeshGeometry3D();
             Material = new VertColorMaterial();
         }
 
@@ -35,6 +41,11 @@ namespace Spyro_Editor.Models
                 Indices = data.Indices,
                 Colors = data.Colors
             };
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string? name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }
