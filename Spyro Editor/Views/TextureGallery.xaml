@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Spyro_Editor.Views.TextureGallery"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Spyro_Editor.Views"
+    xmlns:model="using:Spyro_Editor.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <DataTemplate x:Key="TextureItemTemplate" x:DataType="model:TextureGalleryItem">
+            <StackPanel Padding="16,16,16,10">
+                <Image Width="64" Height="64" Source="{x:Bind Bitmap}" />
+                <TextBlock Text="{x:Bind DisplayText}" Padding="0,6,0,0" HorizontalAlignment="Center" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="TextureDetailGroupTemplate" x:DataType="model:TextureDetailGroupItem">
+            <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Padding="0,0,12,0" Width="100">
+                    <Image Width="{x:Bind ImageWidth}" Height="{x:Bind ImageHeight}" Source="{x:Bind Bitmap}" HorizontalAlignment="Center" />
+                    <TextBlock Text="{x:Bind Dimensions}" HorizontalAlignment="Center" Margin="0,8,0,0" Foreground="{ThemeResource TemporaryTextFillColorDisabled}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{x:Bind GroupName}" Margin="0,0,0,12" Style="{ThemeResource BodyLargeTextBlockStyle}" TextLineBounds="Tight" />
+                        <FontIcon Glyph="&#xE9CE;" Margin="4,0,0,0" ToolTipService.ToolTip="{x:Bind GroupDescription}" VerticalAlignment="Top" FontSize="14" Foreground="{ThemeResource TemporaryTextFillColorDisabled}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Export" Margin="0,0,12,0" Click="ExportButton_Click" DataContext="{x:Bind}" />
+                        <Button Content="Import" IsEnabled="False" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="350" />
+        </Grid.ColumnDefinitions>
+        <GridView ItemsSource="{x:Bind Model.Items}" ItemTemplate="{StaticResource TextureItemTemplate}" IsItemClickEnabled="True" SelectionMode="Single" ItemClick="GridView_ItemClick" />
+        <Grid Grid.Column="1" Margin="12,0,0,0" Padding="12" CornerRadius="4" Background="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="Details" Style="{ThemeResource BodyLargeStrongTextBlockStyle}" />
+            <TextBlock Grid.Row="1" x:Name="NoTextureSelectedText" Text="Select a texture" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource TemporaryTextFillColorDisabled}" />
+            <StackPanel Grid.Row="1" x:Name="DetailPanel" Margin="0,8,0,0" Visibility="Collapsed">
+                <GridView ItemsSource="{x:Bind Model.DetailGroupItems}" ItemTemplate="{StaticResource TextureDetailGroupTemplate}" IsItemClickEnabled="False" SelectionMode="None">
+                    <GridView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid x:Name="MaxItemsWrapGrid" MaximumRowsOrColumns="1" Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </GridView.ItemsPanel>
+                </GridView>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

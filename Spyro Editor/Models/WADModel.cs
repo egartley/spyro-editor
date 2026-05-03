@@ -1,6 +1,5 @@
 ﻿using Spyro_Editor.Constants;
 using Spyro_Editor.Data;
-using Spyro_Editor.Views;
 using System.Collections.ObjectModel;
 
 namespace Spyro_Editor.Models
@@ -63,5 +62,21 @@ namespace Spyro_Editor.Models
         {
             return WAD!.Subfiles.Find(s => s.Id == id);
         }
+    }
+
+    public class WADTreeNode
+    {
+        public enum NodeType
+        {
+            Group,
+            Subfile
+        }
+
+        public short Id = 0;
+        public bool IsExpanded = false;
+        public string Glyph = "";
+        public required string DisplayName;
+        public required NodeType Type;
+        public ObservableCollection<WADTreeNode> Children = new ObservableCollection<WADTreeNode>();
     }
 }

@@ -1,16 +1,15 @@
 ﻿using Spyro_Editor.Interfaces;
-using Spyro_Editor.Utils;
 using System.IO;
 
 namespace Spyro_Editor.Data.Level
 {
     /// <summary>
-    /// Data from a level subfile. Consists of various sections defined by sizes/jumps at the beginning of each
+    /// Data from a level subfile. Consists of various sections that start with a size/jump
     /// </summary>
     public class Level : IBinaryObject
     {
-        public byte[][]? Textures;
         public Ground? Ground;
+        public Texture[]? Textures;
 
         public void Read(BinaryReader reader)
         {
@@ -65,10 +64,11 @@ namespace Spyro_Editor.Data.Level
             TextureTable textureTable = new TextureTable();
             textureTable.Read(reader);
 
-            Textures = new byte[textureTable.Count][];
+            Textures = new Texture[textureTable.Count];
             for (int i = 0; i < textureTable.Count; i++)
             {
-                Textures[i] = TextureDecode.Rotate(TextureDecode.Decode(vram, textureTable.MIDHeaders[i]), textureTable.MIDHeaders[i]);
+                Textures[i] = new Texture(vram, textureTable.LODHeaders[i], textureTable.MIDHeaders[i],
+                    textureTable.SPRHeaders[i], textureTable.CORHeaders[i], textureTable.TNYHeaders[i]);
             }
 
             reader.BaseStream.Seek(groundOffset, SeekOrigin.Begin);

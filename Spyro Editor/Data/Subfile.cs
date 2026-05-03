@@ -14,6 +14,7 @@ namespace Spyro_Editor.Data
         public uint Offset;
         public uint Size;
         public string DisplayName;
+        public Level.Level? Level;
         public SubfileType Type;
         private string TempFileName;
 
@@ -38,6 +39,18 @@ namespace Spyro_Editor.Data
         {
             StorageFile file = await GetTempFile();
             await file.DeleteAsync();
+        }
+
+        public async Task LoadLevel()
+        {
+            Level = new Level.Level();
+            using (var stream = await GetTempFileStream())
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    Level.Read(reader);
+                }
+            }
         }
 
         public async Task<byte[]> GetBuffer(bool readFromWAD, string wadPath = "")

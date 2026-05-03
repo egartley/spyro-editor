@@ -39,7 +39,7 @@ namespace Spyro_Editor.Utils
                         ushort word = vram.GetWord(x4 + x, header.Y4 + y);
 
                         int i1 = (y * header.Size + (x * 2)) * 4;
-                        byte[] pixel1 = clut[word & 256];
+                        byte[] pixel1 = clut[word & 255];
                         rgba[i1] = pixel1[0];
                         rgba[i1 + 1] = pixel1[1];
                         rgba[i1 + 2] = pixel1[2];

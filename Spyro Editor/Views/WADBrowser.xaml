@@ -4,11 +4,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Spyro_Editor.Views"
+    xmlns:model="using:Spyro_Editor.Models"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Page.Resources>
-        <DataTemplate x:Key="WADTreeNodeIconTemplate" x:DataType="local:WADTreeNode">
+        <DataTemplate x:Key="WADTreeNodeIconTemplate" x:DataType="model:WADTreeNode">
             <TreeViewItem ItemsSource="{x:Bind Children}" IsExpanded="{x:Bind IsExpanded}">
                 <StackPanel Orientation="Horizontal">
                     <FontIcon Glyph="{x:Bind Glyph}" />
@@ -17,7 +18,7 @@
                 </StackPanel>
             </TreeViewItem>
         </DataTemplate>
-        <DataTemplate x:Key="WADTreeNodeTemplate" x:DataType="local:WADTreeNode">
+        <DataTemplate x:Key="WADTreeNodeTemplate" x:DataType="model:WADTreeNode">
             <TreeViewItem ItemsSource="{x:Bind Children}" Content="{x:Bind DisplayName}" IsExpanded="{x:Bind IsExpanded}" />
         </DataTemplate>
         <local:WADTreeNodeTemplateSelector x:Key="WADTreeNodeTemplateSelector"

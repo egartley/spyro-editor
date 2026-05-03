@@ -15,11 +15,11 @@ namespace Spyro_Editor.Views
             Model = new OverviewModel();
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.Parameter is SubfileContext context)
             {
-                await Model.Load(context.Subfile);
+                Model.Load(context.Subfile);
             }
         }
     }

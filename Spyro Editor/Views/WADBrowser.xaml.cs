@@ -2,7 +2,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Spyro_Editor.Data;
 using Spyro_Editor.Models;
-using System.Collections.ObjectModel;
 
 namespace Spyro_Editor.Views
 {
@@ -48,22 +47,6 @@ namespace Spyro_Editor.Views
                 }
             }
         }
-    }
-
-    public class WADTreeNode
-    {
-        public enum NodeType
-        {
-            Group,
-            Subfile
-        }
-
-        public short Id = 0;
-        public bool IsExpanded = false;
-        public string Glyph = "";
-        public required string DisplayName;
-        public required NodeType Type;
-        public ObservableCollection<WADTreeNode> Children = new ObservableCollection<WADTreeNode>();
     }
 
     class WADTreeNodeTemplateSelector : DataTemplateSelector

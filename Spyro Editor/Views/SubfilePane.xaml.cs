@@ -29,6 +29,11 @@ namespace Spyro_Editor.Views
             if (Subfile.Type != Constants.SubfileType.Level)
             {
                 HelixViewSelectorItem.Visibility = Visibility.Collapsed;
+                TextureGallerySelectorItem.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                await Subfile.LoadLevel();
             }
 
             Navigate(0, true);
@@ -51,6 +56,9 @@ namespace Spyro_Editor.Views
                     break;
                 case 1:
                     pageType = typeof(HelixViewer);
+                    break;
+                case 2:
+                    pageType = typeof(TextureGallery);
                     break;
                 default:
                     pageType = typeof(HexDataViewer);

@@ -26,7 +26,7 @@ namespace Spyro_Editor.Views
         {
             if (e.Parameter is SubfileContext context)
             {
-                await Model.Load(context.Subfile);
+                await Model.Load(context.Subfile.Level!);
                 Viewport.ModelUpDirection = ZUpCorrection;
                 Vector3 pos = Model.Mesh!.Positions.GetCentroid();
                 pos.Z += 3500; // bird's eye view

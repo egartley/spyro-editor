@@ -1,9 +1,7 @@
 ﻿using HelixToolkit.SharpDX.Core;
 using HelixToolkit.WinUI;
-using Spyro_Editor.Data;
 using Spyro_Editor.Data.Level;
 using System.ComponentModel;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -24,16 +22,8 @@ namespace Spyro_Editor.Models
             Material = new VertColorMaterial();
         }
 
-        public async Task Load(Subfile subfile)
+        public async Task Load(Level level)
         {
-            Level level = new Level();
-            using (var stream = await subfile.GetTempFileStream())
-            {
-                using (var reader = new BinaryReader(stream))
-                {
-                    level.Read(reader);
-                }
-            }
             LevelModel data = new LevelModel(level.Ground!);
             Mesh = new MeshGeometry3D
             {

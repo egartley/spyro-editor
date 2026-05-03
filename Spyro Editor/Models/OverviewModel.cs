@@ -1,9 +1,6 @@
 ﻿using Spyro_Editor.Data;
-using Spyro_Editor.Data.Level;
 using System.ComponentModel;
-using System.IO;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace Spyro_Editor.Models
 {
@@ -37,22 +34,14 @@ namespace Spyro_Editor.Models
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public async Task Load(Subfile subfile)
+        public void Load(Subfile subfile)
         {
             Title = $"Subfile {subfile.Id}";
             Type = subfile.Type.ToString();
-            if (subfile.Type == Constants.SubfileType.Level)
+            if (subfile.Level is not null)
             {
-                Level level = new Level();
-                using (var stream = await subfile.GetTempFileStream())
-                {
-                    using (var reader = new BinaryReader(stream))
-                    {
-                        level.Read(reader);
-                    }
-                }
-                PartCount = level.Ground!.Parts.Length;
-                TextureCount = level.Textures!.Length;
+                PartCount = subfile.Level.Ground!.Parts.Length;
+                TextureCount = subfile.Level.Textures!.Length;
                 DetectedLevel = subfile.DisplayName.Split("- ")[1];
             }
             else
