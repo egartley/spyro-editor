@@ -10,7 +10,6 @@ namespace Spyro_Editor.Views
 {
     public sealed partial class HelixViewer : Page
     {
-        private readonly Vector3 ZUpCorrection = new Vector3(0, 0, 1);
         private readonly HelixModel Model;
 
         public HelixViewer()
@@ -27,9 +26,8 @@ namespace Spyro_Editor.Views
             if (e.Parameter is SubfileContext context)
             {
                 await Model.Load(context.Subfile.Level!);
-                Viewport.ModelUpDirection = ZUpCorrection;
                 Vector3 pos = Model.Mesh!.Positions.GetCentroid();
-                pos.Z += 3500; // bird's eye view
+                pos.Y += 100;
                 Viewport.Camera.Position = pos;
             }
             base.OnNavigatedTo(e);

@@ -100,6 +100,10 @@ namespace Spyro_Editor.Data.Level
             {
                 byte[] bytes = reader.ReadBytes(4);
                 LowVertices[i] = GeometryDecode.DecodeVertex(bytes, Header.x, Header.y, Header.z);
+                int y = LowVertices[i][1];
+                int z = LowVertices[i][2];
+                LowVertices[i][1] = z;
+                LowVertices[i][2] = -1 * y;
             }
 
             LowColors = new byte[Header.LowColorCount][];
@@ -120,6 +124,10 @@ namespace Spyro_Editor.Data.Level
             {
                 byte[] bytes = reader.ReadBytes(4);
                 HighVertices[i] = GeometryDecode.DecodeVertex(bytes, Header.x, Header.y, Header.z);
+                int y = HighVertices[i][1];
+                int z = HighVertices[i][2];
+                HighVertices[i][1] = z;
+                HighVertices[i][2] = -1 * y;
             }
 
             HighColors = new byte[Header.HighColorCount][];
