@@ -21,6 +21,7 @@
                 <SelectorBarItem x:Name="OverviewSelectorItem" Padding="24,8" Text="Overview" IsSelected="True" />
                 <SelectorBarItem x:Name="HelixViewSelectorItem" Padding="24,8" Text="3D View" />
                 <SelectorBarItem x:Name="TextureGallerySelectorItem" Padding="24,8" Text="Textures" />
+                <SelectorBarItem x:Name="MobyInstancesSelectorItem" Padding="24,8" Text="Moby Instances" />
                 <SelectorBarItem x:Name="HexDataViewSelectorItem" Padding="24,8" Text="Raw Data" />
             </SelectorBar>
         </StackPanel>

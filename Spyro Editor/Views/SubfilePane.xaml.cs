@@ -30,6 +30,7 @@ namespace Spyro_Editor.Views
             {
                 HelixViewSelectorItem.Visibility = Visibility.Collapsed;
                 TextureGallerySelectorItem.Visibility = Visibility.Collapsed;
+                MobyInstancesSelectorItem.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -59,6 +60,9 @@ namespace Spyro_Editor.Views
                     break;
                 case 2:
                     pageType = typeof(TextureGallery);
+                    break;
+                case 3:
+                    pageType = typeof(MobyInstances);
                     break;
                 default:
                     pageType = typeof(HexDataViewer);

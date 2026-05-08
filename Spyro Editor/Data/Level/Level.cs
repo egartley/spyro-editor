@@ -11,9 +11,12 @@ namespace Spyro_Editor.Data.Level
     {
         public Ground? Ground;
         public Texture[]? Textures;
+        public MobyInstance[]? MobyInstances;
 
         public void Read(BinaryReader reader, Game game)
         {
+            // gather offsets
+
             uint vramOffset = reader.ReadUInt32();
 
             reader.BaseStream.Seek(8, SeekOrigin.Begin);
@@ -46,11 +49,8 @@ namespace Spyro_Editor.Data.Level
             //}
             //byte[] sky = reader.ReadBytes((int)skySize);
 
-            //reader.BaseStream.Seek(24, SeekOrigin.Begin);
-            //uint subfile4Offset = reader.ReadUInt32();
-            //uint subfile4Size = reader.ReadUInt32();
-            //reader.BaseStream.Seek(subfile4Offset, SeekOrigin.Begin);
-            //byte[] subfile4 = reader.ReadBytes((int)subfile4Size);
+            reader.BaseStream.Seek(24, SeekOrigin.Begin);
+            uint subfile4Offset = reader.ReadUInt32();
 
             // parse sections
 
@@ -82,6 +82,29 @@ namespace Spyro_Editor.Data.Level
             reader.BaseStream.Seek(groundOffset, SeekOrigin.Begin);
             Ground = new Ground();
             Ground.Read(reader, game);
+
+            reader.BaseStream.Seek(subfile4Offset, SeekOrigin.Begin);
+            byte[] sectionIndex = [7, 8, 12];
+            byte[] startOffsets = [136, 44, 48];
+            reader.BaseStream.Seek(startOffsets[(int)game], SeekOrigin.Current);
+            for (int i = 0; i < sectionIndex[(int)game]; i++)
+            {
+                uint skip = reader.ReadUInt32();
+                // skip is from the section start, so go back 4 bytes
+                reader.BaseStream.Seek(skip - 4, SeekOrigin.Current);
+            }
+            // go over the instance section's skip
+            reader.BaseStream.Seek(4, SeekOrigin.Current);
+            uint instanceCount = reader.ReadUInt32();
+            MobyInstances = new MobyInstance[instanceCount];
+            for (int i = 0; i < instanceCount; i++)
+            {
+                long startPos = reader.BaseStream.Position;
+                MobyInstance instance = new MobyInstance();
+                instance.Read(reader, game);
+                MobyInstances[i] = instance;
+                reader.BaseStream.Seek(startPos + MobyInstance.SIZE, SeekOrigin.Begin);
+            }
         }
     }
 }

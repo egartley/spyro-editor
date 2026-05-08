@@ -17,6 +17,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -26,10 +27,12 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Level: " Style="{ThemeResource BodyLargeStrongTextBlockStyle}" />
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Parts: " Style="{ThemeResource BodyLargeStrongTextBlockStyle}" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Textures: " Style="{ThemeResource BodyLargeStrongTextBlockStyle}" />
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Moby Instances: " Style="{ThemeResource BodyLargeStrongTextBlockStyle}" />
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind Model.Type, Mode=OneWay}" Margin="12,0,0,4" Style="{ThemeResource BodyLargeTextBlockStyle}" />
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind Model.DetectedLevel, Mode=OneWay}" Margin="12,0,0,4" Style="{ThemeResource BodyLargeTextBlockStyle}" />
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Bind Model.PartCount, Mode=OneWay}" Margin="12,0,0,4" Style="{ThemeResource BodyLargeTextBlockStyle}" />
                 <TextBlock Grid.Row="3" Grid.Column="1" Text="{x:Bind Model.TextureCount, Mode=OneWay}" Margin="12,0,0,4" Style="{ThemeResource BodyLargeTextBlockStyle}" />
+                <TextBlock Grid.Row="4" Grid.Column="1" Text="{x:Bind Model.MobyInstanceCount, Mode=OneWay}" Margin="12,0,0,4" Style="{ThemeResource BodyLargeTextBlockStyle}" />
             </Grid>
             <TextBlock Text="This UI is not finished" Foreground="{ThemeResource TemporaryTextFillColorDisabled}" />
         </StackPanel>

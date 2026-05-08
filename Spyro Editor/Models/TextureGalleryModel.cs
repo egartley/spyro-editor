@@ -8,8 +8,8 @@ namespace Spyro_Editor.Models
 {
     public class TextureGalleryModel
     {
-        public ObservableCollection<TextureGalleryItem> Items = new ObservableCollection<TextureGalleryItem>();
-        public ObservableCollection<TextureDetailGroupItem> DetailGroupItems = new ObservableCollection<TextureDetailGroupItem>();
+        public ObservableCollection<TextureGalleryItem> Items = new();
+        public ObservableCollection<TextureDetailGroupItem> DetailGroupItems = new();
 
         public void Load(Texture[] textures)
         {

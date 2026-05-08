@@ -16,6 +16,11 @@ namespace Spyro_Editor.Models
             get;
             set { field = value; OnPropertyChanged(); }
         }
+        public int MobyInstanceCount
+        {
+            get;
+            set { field = value; OnPropertyChanged(); }
+        }
         public string? Title
         {
             get;
@@ -42,6 +47,7 @@ namespace Spyro_Editor.Models
             {
                 PartCount = subfile.Level.Ground!.Parts.Length;
                 TextureCount = subfile.Level.Textures!.Length;
+                MobyInstanceCount = subfile.Level.MobyInstances!.Length;
                 DetectedLevel = subfile.DisplayName.Split("- ")[1];
             }
             else
