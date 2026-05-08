@@ -31,6 +31,8 @@ namespace Spyro_Editor.Data.Level
             }
             else
             {
+                reader.BaseStream.Seek(-4, SeekOrigin.Current);
+                reader.BaseStream.Seek(partCount, SeekOrigin.Current);
                 partCount = reader.ReadUInt32();
                 partOffsets = new long[partCount];
                 for (int i = 0; i < partCount; i++)
