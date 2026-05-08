@@ -1,4 +1,5 @@
-﻿using Spyro_Editor.Interfaces;
+﻿using Spyro_Editor.Constants;
+using Spyro_Editor.Interfaces;
 using Spyro_Editor.Utils;
 using System.IO;
 
@@ -13,16 +14,30 @@ namespace Spyro_Editor.Data.Level
     {
         public Part[] Parts = [];
 
-        public void Read(BinaryReader reader)
+        public void Read(BinaryReader reader, Game game)
         {
+            long startPos = reader.BaseStream.Position;
             reader.BaseStream.Seek(4, SeekOrigin.Current);
             uint partCount = reader.ReadUInt32();
 
             long[] partOffsets = new long[partCount];
-            for (int i = 0; i < partCount; i++)
+            if (game == Game.Spyro1)
             {
-                uint offset = reader.ReadUInt32();
-                partOffsets[i] = reader.BaseStream.Position + offset - (4 * i);
+                for (int i = 0; i < partCount; i++)
+                {
+                    uint offset = reader.ReadUInt32();
+                    partOffsets[i] = reader.BaseStream.Position + offset - (4 * i);
+                }
+            }
+            else
+            {
+                partCount = reader.ReadUInt32();
+                partOffsets = new long[partCount];
+                for (int i = 0; i < partCount; i++)
+                {
+                    uint offset = reader.ReadUInt32();
+                    partOffsets[i] = startPos + offset + 12;
+                }
             }
 
             Parts = new Part[partCount];
@@ -30,9 +45,9 @@ namespace Spyro_Editor.Data.Level
             {
                 reader.BaseStream.Seek(partOffsets[i], SeekOrigin.Begin);
                 PartHeader header = new PartHeader();
-                header.Read(reader);
+                header.Read(reader, game);
                 Part part = new Part(header);
-                part.Read(reader);
+                part.Read(reader, game);
                 Parts[i] = part;
             }
         }
@@ -57,7 +72,7 @@ namespace Spyro_Editor.Data.Level
         public byte Water;
         public uint Flags;
 
-        public void Read(BinaryReader reader)
+        public void Read(BinaryReader reader, Game game)
         {
             y = reader.ReadInt16();
             x = reader.ReadInt16();
@@ -93,17 +108,13 @@ namespace Spyro_Editor.Data.Level
             Header = header;
         }
 
-        public void Read(BinaryReader reader)
+        public void Read(BinaryReader reader, Game game)
         {
             LowVertices = new int[Header.LowVertexCount][];
             for (int i = 0; i < Header.LowVertexCount; i++)
             {
                 byte[] bytes = reader.ReadBytes(4);
-                LowVertices[i] = GeometryDecode.DecodeVertex(bytes, Header.x, Header.y, Header.z);
-                int y = LowVertices[i][1];
-                int z = LowVertices[i][2];
-                LowVertices[i][1] = z;
-                LowVertices[i][2] = -1 * y;
+                LowVertices[i] = GeometryDecode.DecodeVertex(bytes, game, Header.x, Header.y, Header.z);
             }
 
             LowColors = new byte[Header.LowColorCount][];
@@ -116,18 +127,14 @@ namespace Spyro_Editor.Data.Level
             for (int i = 0; i < Header.LowPolyCount; i++)
             {
                 byte[] bytes = reader.ReadBytes(8);
-                LowPolys[i] = GeometryDecode.DecodeLowPoly(bytes);
+                LowPolys[i] = GeometryDecode.DecodeLowPoly(bytes, game);
             }
 
             HighVertices = new int[Header.HighVertexCount][];
             for (int i = 0; i < Header.HighVertexCount; i++)
             {
                 byte[] bytes = reader.ReadBytes(4);
-                HighVertices[i] = GeometryDecode.DecodeVertex(bytes, Header.x, Header.y, Header.z);
-                int y = HighVertices[i][1];
-                int z = HighVertices[i][2];
-                HighVertices[i][1] = z;
-                HighVertices[i][2] = -1 * y;
+                HighVertices[i] = GeometryDecode.DecodeVertex(bytes, game, Header.x, Header.y, Header.z);
             }
 
             HighColors = new byte[Header.HighColorCount][];
@@ -136,6 +143,7 @@ namespace Spyro_Editor.Data.Level
                 HighColors[i] = reader.ReadBytes(4);
             }
 
+            // idk what this is skipping, but needed to get to the high polys
             reader.BaseStream.Seek(Header.HighColorCount * 4, SeekOrigin.Current);
 
             HighPolys = new byte[Header.HighPolyCount][];

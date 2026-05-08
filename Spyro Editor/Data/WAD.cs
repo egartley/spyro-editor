@@ -47,11 +47,11 @@ namespace Spyro_Editor.Data
                     {
                         case (uint)WADSignature.Spyro3_NTSC_1_0:
                             Game = Game.Spyro3;
-                            DisplayName = "Spyro: Year of the Dragon (1.0) (NTSC)";
+                            DisplayName = "Spyro: Year of the Dragon (v1.0) (NTSC)";
                             break;
                         case (uint)WADSignature.Spyro3_NTSC_1_1:
                             Game = Game.Spyro3;
-                            DisplayName = "Spyro: Year of the Dragon (1.1) (NTSC)";
+                            DisplayName = "Spyro: Year of the Dragon (v1.1) (NTSC)";
                             break;
                         default:
                             Game = Game.Spyro1;
@@ -61,10 +61,10 @@ namespace Spyro_Editor.Data
                     break;
             }
             reader.BaseStream.Seek(0, SeekOrigin.Begin);
-            Read(reader);
+            Read(reader, Game);
         }
 
-        public void Read(BinaryReader reader)
+        public void Read(BinaryReader reader, Game game)
         {
             short index = 0;
             byte strikes = 0;

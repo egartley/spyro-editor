@@ -24,10 +24,16 @@ namespace Spyro_Editor.Models
         {
             DetailGroupItems.Clear();
             DetailGroupItems.Add(new TextureDetailGroupItem(index, texture.RGBA_COR, "COR", Texture.COR_SIZE, Texture.COR_SIZE, "Made up of 4 separate 32x32 textures"));
-            DetailGroupItems.Add(new TextureDetailGroupItem(index, texture.RGBA_TNY, "TNY", Texture.TNY_SIZE, Texture.TNY_SIZE, "Made up of 16 separate 16x16 textures"));
-            DetailGroupItems.Add(new TextureDetailGroupItem(index, texture.RGBA_SPR, "SPR", Texture.SPR_SIZE, Texture.SPR_SIZE, "Unknown usage, same appearance as MID"));
+            if (texture.RGBA_TNY.Length > 0)
+            {
+                DetailGroupItems.Add(new TextureDetailGroupItem(index, texture.RGBA_TNY, "TNY", Texture.TNY_SIZE, Texture.TNY_SIZE, "Made up of 16 separate 16x16 textures"));
+            }
             DetailGroupItems.Add(new TextureDetailGroupItem(index, texture.RGBA_MID, "MID", Texture.MID_SIZE, Texture.MID_SIZE, "Shown at mid-range to the camera"));
             DetailGroupItems.Add(new TextureDetailGroupItem(index, texture.RGBA_LOD, "LOD", Texture.LOD_SIZE, Texture.LOD_SIZE, "Shown at farther distances from the camera"));
+            if (texture.RGBA_SPR.Length > 0)
+            {
+                DetailGroupItems.Add(new TextureDetailGroupItem(index, texture.RGBA_SPR, "SPR", Texture.SPR_SIZE, Texture.SPR_SIZE, "Unknown usage, same appearance as MID"));
+            }
         }
     }
 

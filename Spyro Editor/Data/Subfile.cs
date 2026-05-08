@@ -17,14 +17,16 @@ namespace Spyro_Editor.Data
         public Level.Level? Level;
         public SubfileType Type;
         private string TempFileName;
+        private Game Game;
 
         public Subfile(Game game, short id, uint offset, uint size)
         {
             Id = id;
+            Game = game;
             Offset = offset;
             Size = size;
-            DisplayName = $"{Id} - {GetDisplayName(game)}";
-            Type = GetType(game);
+            Type = GetSubfileType();
+            DisplayName = $"{Id} - {GetDisplayName()}";
             TempFileName = $"sf{Id}.bin";
         }
 
@@ -48,7 +50,7 @@ namespace Spyro_Editor.Data
             {
                 using (var reader = new BinaryReader(stream))
                 {
-                    Level.Read(reader);
+                    Level.Read(reader, Game);
                 }
             }
         }
@@ -93,11 +95,11 @@ namespace Spyro_Editor.Data
             return await ApplicationData.Current.TemporaryFolder.GetFileAsync(TempFileName);
         }
 
-        private string GetDisplayName(Game game)
+        private string GetDisplayName()
         {
             string defaultName = $"0x{Offset.ToString("X")}";
             Dictionary<short, string> names;
-            switch (game)
+            switch (Game)
             {
                 case Game.Spyro1:
                     names = SubfileNames.Spyro1_NSTC;
@@ -121,17 +123,9 @@ namespace Spyro_Editor.Data
             }
         }
 
-        private SubfileType GetType(Game game)
+        private SubfileType GetSubfileType()
         {
-            /*
-             * https://github.com/egartley/noclip.website/blob/main/src/Spyro/tools/extractor.py
-            subfile_type_map = [
-                {"level": range(10, 79, 2), "cutscene": range(3, 7, 1), "starring": range(82, 102, 1)},
-                {"level": range(15, 72, 2), "cutscene": range(73, 96, 2), "starring": range(187, 197, 1)},
-                {"level": range(97, 170, 2), "cutscene": range(6, 67, 3), "starring": range(183, 195, 1)}
-            ]
-             */
-            switch (game)
+            switch (Game)
             {
                 case Game.Spyro1:
                     if (11 <= Id && 79 >= Id)

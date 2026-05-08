@@ -1,4 +1,5 @@
-﻿using Spyro_Editor.Interfaces;
+﻿using Spyro_Editor.Constants;
+using Spyro_Editor.Interfaces;
 using System;
 using System.IO;
 
@@ -41,7 +42,7 @@ namespace Spyro_Editor.Data.Level
             }
         }
 
-        public void Read(BinaryReader reader)
+        public void Read(BinaryReader reader, Game game)
         {
             byte[] bytes = reader.ReadBytes(SIZE);
             Words = new ushort[bytes.Length / 2];

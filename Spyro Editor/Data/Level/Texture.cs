@@ -11,15 +11,14 @@ namespace Spyro_Editor.Data.Level
         public static byte TNY_SIZE = 64;
         public byte[] RGBA_LOD;
         public byte[] RGBA_MID;
-        public byte[] RGBA_SPR;
         public byte[] RGBA_COR;
-        public byte[] RGBA_TNY;
+        public byte[] RGBA_SPR = [];
+        public byte[] RGBA_TNY = [];
 
-        public Texture(VRAM vram, TextureHeader lodHeader, TextureHeader midHeader, TextureHeader sprHeader, TextureHeader[] corHeaders, TextureHeader[] tnyHeaders)
+        public Texture(VRAM vram, TextureHeader lodHeader, TextureHeader midHeader, TextureHeader[] corHeaders)
         {
             RGBA_LOD = TextureDecode.Rotate(TextureDecode.Decode(vram, lodHeader), lodHeader);
             RGBA_MID = TextureDecode.Rotate(TextureDecode.Decode(vram, midHeader), midHeader);
-            RGBA_SPR = TextureDecode.Rotate(TextureDecode.Decode(vram, sprHeader), sprHeader);
 
             byte[][] cors = new byte[4][];
             for (int i = 0; i < cors.Length; i++)
@@ -27,6 +26,11 @@ namespace Spyro_Editor.Data.Level
                 cors[i] = TextureDecode.Rotate(TextureDecode.Decode(vram, corHeaders[i]), corHeaders[i]);
             }
             RGBA_COR = ArrayHelpers.CombineCorners(cors[0], cors[1], cors[2], cors[3], 32);
+        }
+
+        public Texture(VRAM vram, TextureHeader lodHeader, TextureHeader midHeader, TextureHeader[] corHeaders, TextureHeader[] tnyHeaders, TextureHeader sprHeader) : this(vram, lodHeader, midHeader, corHeaders)
+        {
+            RGBA_SPR = TextureDecode.Rotate(TextureDecode.Decode(vram, sprHeader), sprHeader);
 
             byte[][] tnys = new byte[16][];
             for (int i = 0; i < tnys.Length; i++)

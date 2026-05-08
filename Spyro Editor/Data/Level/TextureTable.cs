@@ -1,4 +1,5 @@
-﻿using Spyro_Editor.Interfaces;
+﻿using Spyro_Editor.Constants;
+using Spyro_Editor.Interfaces;
 using System.IO;
 
 namespace Spyro_Editor.Data.Level
@@ -26,7 +27,7 @@ namespace Spyro_Editor.Data.Level
         public TextureHeader[][] CORHeaders = [];
         public TextureHeader[][] TNYHeaders = [];
 
-        public void Read(BinaryReader reader)
+        public void Read(BinaryReader reader, Game game)
         {
             // starts with size/jump at 0x0, don't care about that here
             reader.BaseStream.Seek(4, SeekOrigin.Current);
@@ -35,34 +36,55 @@ namespace Spyro_Editor.Data.Level
             Count = reader.ReadByte();
             reader.BaseStream.Seek(3, SeekOrigin.Current);
 
-            LODHeaders = new TextureHeader[Count];
-            MIDHeaders = new TextureHeader[Count];
-            for (int i = 0; i < Count; i++)
+            if (game == Game.Spyro1)
             {
-                LODHeaders[i] = new TextureHeader(reader.ReadBytes(8));
-                MIDHeaders[i] = new TextureHeader(reader.ReadBytes(8));
+                LODHeaders = new TextureHeader[Count];
+                MIDHeaders = new TextureHeader[Count];
+                for (int i = 0; i < Count; i++)
+                {
+                    LODHeaders[i] = new TextureHeader(reader.ReadBytes(8), game);
+                    MIDHeaders[i] = new TextureHeader(reader.ReadBytes(8), game);
+                }
+
+                SPRHeaders = new TextureHeader[Count];
+                CORHeaders = new TextureHeader[Count][];
+                TNYHeaders = new TextureHeader[Count][];
+                for (int i = 0; i < Count; i++)
+                {
+                    SPRHeaders[i] = new TextureHeader(reader.ReadBytes(8), game);
+
+                    TextureHeader[] COR = new TextureHeader[4];
+                    for (int j = 0; j < COR.Length; j++)
+                    {
+                        COR[j] = new TextureHeader(reader.ReadBytes(8), game);
+                    }
+                    CORHeaders[i] = COR;
+
+                    TextureHeader[] TNY = new TextureHeader[16];
+                    for (int j = 0; j < TNY.Length; j++)
+                    {
+                        TNY[j] = new TextureHeader(reader.ReadBytes(8), game);
+                    }
+                    TNYHeaders[i] = TNY;
+                }
             }
-
-            SPRHeaders = new TextureHeader[Count];
-            CORHeaders = new TextureHeader[Count][];
-            TNYHeaders = new TextureHeader[Count][];
-            for (int i = 0; i < Count; i++)
+            else
             {
-                SPRHeaders[i] = new TextureHeader(reader.ReadBytes(8));
-
-                TextureHeader[] COR = new TextureHeader[4];
-                for (int j = 0; j < COR.Length; j++)
+                LODHeaders = new TextureHeader[Count];
+                MIDHeaders = new TextureHeader[Count];
+                CORHeaders = new TextureHeader[Count][];
+                for (int i = 0; i < Count; i++)
                 {
-                    COR[j] = new TextureHeader(reader.ReadBytes(8));
-                }
-                CORHeaders[i] = COR;
+                    LODHeaders[i] = new TextureHeader(reader.ReadBytes(8), game);
+                    MIDHeaders[i] = new TextureHeader(reader.ReadBytes(8), game);
 
-                TextureHeader[] TNY = new TextureHeader[16];
-                for (int j = 0; j < TNY.Length; j++)
-                {
-                    TNY[j] = new TextureHeader(reader.ReadBytes(8));
+                    TextureHeader[] COR = new TextureHeader[4];
+                    for (int j = 0; j < COR.Length; j++)
+                    {
+                        COR[j] = new TextureHeader(reader.ReadBytes(8), game);
+                    }
+                    CORHeaders[i] = COR;
                 }
-                TNYHeaders[i] = TNY;
             }
         }
     }
@@ -75,7 +97,7 @@ namespace Spyro_Editor.Data.Level
         public int PageX;
         public int PageY;
         public byte M;
-        public byte Size;
+        public byte Size = 32;
         public int X1;
         public int X2;
         public int X3;
@@ -87,25 +109,33 @@ namespace Spyro_Editor.Data.Level
         public int Rotation;
         public int S;
         public bool F;
+        public int Transparent = 0;
 
-        internal TextureHeader(byte[] rawBytes)
+        internal TextureHeader(byte[] rawBytes, Game game)
         {
             if ((rawBytes[7] & 14) > 0 || (rawBytes[6] & 8) == 0)
             {
                 F = true;
             }
 
-            if ((rawBytes[6] & 96) > 0 || rawBytes[1] != rawBytes[5])
+            if (game == Game.Spyro1)
+            {
+                if ((rawBytes[6] & 96) > 0 || rawBytes[1] != rawBytes[5])
+                {
+                    F = true;
+                }
+                if ((rawBytes[7] & 128) > 0)
+                {
+                    Size = 32;
+                }
+                else
+                {
+                    Size = 16;
+                }
+            }
+            else if ((rawBytes[1] + 31) != rawBytes[5])
             {
                 F = true;
-            }
-            if ((rawBytes[7] & 128) > 0)
-            {
-                Size = 32;
-            }
-            else
-            {
-                Size = 16;
             }
 
             if ((rawBytes[0] + Size - 1) != rawBytes[4] || rawBytes[0] > (256 - Size) || rawBytes[1] > (256 - Size))
@@ -154,6 +184,17 @@ namespace Spyro_Editor.Data.Level
             PageX = (rawBytes[2] & 31) * 16;
             PageY = (rawBytes[2] >> 6) | (rawBytes[3] << 2);
             Rotation = ((rawBytes[7] & 127) >> 4) & 7;
+            if (game != Game.Spyro1)
+            {
+                if ((rawBytes[7] & 128) > 0)
+                {
+                    Transparent = 1 + ((rawBytes[6]  & 127) >> 5);
+                }
+                else
+                {
+                    Transparent = 0;
+                }
+            }
         }
     }
 }
