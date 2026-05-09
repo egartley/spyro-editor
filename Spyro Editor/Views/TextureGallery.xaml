@@ -17,18 +17,18 @@
             </StackPanel>
         </DataTemplate>
         <DataTemplate x:Key="TextureDetailGroupTemplate" x:DataType="model:TextureDetailGroupItem">
-            <Grid Margin="0,12,0,0">
+            <Grid Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Padding="0,0,12,0" Width="100">
-                    <Image Width="{x:Bind ImageWidth}" Height="{x:Bind ImageHeight}" Source="{x:Bind Bitmap}" HorizontalAlignment="Center" />
-                    <TextBlock Text="{x:Bind Dimensions}" HorizontalAlignment="Center" Margin="0,8,0,0" Foreground="{ThemeResource TemporaryTextFillColorDisabled}" />
+                <StackPanel Padding="0,0,12,0">
+                    <Image Width="96" Height="96" Source="{x:Bind Bitmap}" HorizontalAlignment="Center" />
+                    <TextBlock Text="{x:Bind Dimensions}" HorizontalAlignment="Center" Margin="0,6,0,0" Foreground="{ThemeResource TemporaryTextFillColorDisabled}" />
                 </StackPanel>
                 <StackPanel Grid.Column="1">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{x:Bind GroupName}" Margin="0,0,0,12" Style="{ThemeResource BodyLargeTextBlockStyle}" TextLineBounds="Tight" />
+                        <TextBlock Text="{x:Bind GroupName}" Margin="0,0,0,16" Style="{ThemeResource BodyLargeTextBlockStyle}" TextLineBounds="Tight" />
                         <FontIcon Glyph="&#xE9CE;" Margin="4,0,0,0" ToolTipService.ToolTip="{x:Bind GroupDescription}" VerticalAlignment="Top" FontSize="14" Foreground="{ThemeResource TemporaryTextFillColorDisabled}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
@@ -52,7 +52,7 @@
             </Grid.RowDefinitions>
             <TextBlock Text="Details" Style="{ThemeResource BodyLargeStrongTextBlockStyle}" />
             <TextBlock Grid.Row="1" x:Name="NoTextureSelectedText" Text="Select a texture" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource TemporaryTextFillColorDisabled}" />
-            <StackPanel Grid.Row="1" x:Name="DetailPanel" Margin="0,8,0,0" Visibility="Collapsed">
+            <Grid Grid.Row="1" x:Name="DetailPanel" Margin="0,12,0,0" Visibility="Collapsed">
                 <GridView ItemsSource="{x:Bind Model.DetailGroupItems}" ItemTemplate="{StaticResource TextureDetailGroupTemplate}" IsItemClickEnabled="False" SelectionMode="None">
                     <GridView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -60,7 +60,7 @@
                         </ItemsPanelTemplate>
                     </GridView.ItemsPanel>
                 </GridView>
-            </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

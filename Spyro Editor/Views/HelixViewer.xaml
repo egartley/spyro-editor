@@ -4,14 +4,49 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Spyro_Editor.Views"
+    xmlns:model="using:Spyro_Editor.Models"
     xmlns:helix="using:HelixToolkit.WinUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:Key="GroundPartMeshTemplate" x:DataType="model:GroundPartModel">
+            <helix:MeshGeometryModel3D Geometry="{x:Bind Mesh}" Material="{x:Bind Material}" />
+        </DataTemplate>
+        <DataTemplate x:Key="PartListItemTemplate" x:DataType="model:PartListItem">
+            <ItemContainer>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox Padding="12" IsChecked="{x:Bind IsVisible, Mode=TwoWay}" Content="{x:Bind Id}" DataContext="{x:Bind}" Click="PartListItemCheckBox_Click" />
+                </StackPanel>
+            </ItemContainer>
+        </DataTemplate>
+    </Page.Resources>
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="350" />
+        </Grid.ColumnDefinitions>
         <helix:Viewport3DX x:Name="Viewport" FrameRate="60.0" IsInertiaEnabled="False" ShowViewCube="False">
-            <helix:MeshGeometryModel3D Geometry="{x:Bind Model.Mesh, Mode=OneWay}" Material="{x:Bind Model.Material, Mode=OneWay}" />
+            <helix:ItemsModel3D ItemsSource="{x:Bind Model.VisibleMeshes}" ItemTemplate="{StaticResource GroundPartMeshTemplate}" />
         </helix:Viewport3DX>
+        <Grid Grid.Column="1" Margin="12,0,0,0" Padding="12" CornerRadius="4" Background="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="PartsPaneTitle" VerticalAlignment="Center" Style="{ThemeResource BodyLargeStrongTextBlockStyle}" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button x:Name="ShowAllPartsButton" Content="Show All" Click="ShowAllPartsButton_Click" />
+                    <Button x:Name="HideAllPartsButton" Margin="12,0,0,0" Content="Hide All" Click="HideAllPartsButton_Click" />
+                </StackPanel>
+            </Grid>
+            <ItemsView x:Name="PartListItems" Grid.Row="1" Margin="0,12,0,0" ItemsSource="{x:Bind Model.ListItems}" ItemTemplate="{StaticResource PartListItemTemplate}" IsItemInvokedEnabled="False" SelectionMode="None" />
+        </Grid>
     </Grid>
 </Page>
