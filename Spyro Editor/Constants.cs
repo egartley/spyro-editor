@@ -43,9 +43,9 @@ namespace Spyro_Editor.Constants
 
     public static class SubfileNames
     {
-        // TODO: different maps for nstc vs pal and 3 1.0 vs 1.1
+        // TODO: different maps for ntsc vs pal and 3 1.0 vs 1.1
 
-        public static Dictionary<short, string> Spyro1_NSTC = new Dictionary<short, string>
+        public static Dictionary<short, string> Spyro1_NTSC = new Dictionary<short, string>
         {
             [4] = "Title Screen",
             [5] = "Introduction",
@@ -108,7 +108,7 @@ namespace Spyro_Editor.Constants
             [102] = "Jacques"
         };
 
-        public static Dictionary<short, string> Spyro2_NSTC = new Dictionary<short, string>
+        public static Dictionary<short, string> Spyro2_NTSC = new Dictionary<short, string>
         {
             [16] = "Summer Forest",
             [18] = "Glimmer",
@@ -153,7 +153,7 @@ namespace Spyro_Editor.Constants
             [96] = "Title Screen"
         };
 
-        public static Dictionary<short, string> Spyro3_NSTC_1_1 = new Dictionary<short, string>
+        public static Dictionary<short, string> Spyro3_NTSC_1_1 = new Dictionary<short, string>
         {
             [7] = "Title Screen",
             [10] = "An Evil Plot Unfolds...",

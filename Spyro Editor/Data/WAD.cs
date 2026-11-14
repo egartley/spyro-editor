@@ -40,7 +40,7 @@ namespace Spyro_Editor.Data
                     DisplayName = "Spyro: Year of the Dragon (PAL)";
                     break;
                 default:
-                    // 3 nstc requires a different magic since 0x100 is the same between 1.0 and 1.1
+                    // 3 ntsc requires a different magic since 0x100 is the same between 1.0 and 1.1
                     reader.BaseStream.Seek(0x400, SeekOrigin.Begin);
                     uint magic2 = reader.ReadUInt32();
                     switch (magic2)

@@ -39,8 +39,11 @@ namespace Spyro_Editor.Data
 
         public async Task DeleteTemp()
         {
-            StorageFile file = await GetTempFile();
-            await file.DeleteAsync();
+            IStorageItem? item = await ApplicationData.Current.TemporaryFolder.TryGetItemAsync(TempFileName);
+            if (item is not null)
+            {
+                await item.DeleteAsync();
+            }
         }
 
         public async Task LoadLevel()
@@ -71,7 +74,7 @@ namespace Spyro_Editor.Data
             else if (wadPath.Length > 0)
             {
                 byte[] buffer = new byte[Size];
-                using (var stream = File.Open(wadPath, FileMode.Open))
+                using (var stream = File.Open(wadPath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     stream.Seek(Offset, SeekOrigin.Begin);
                     await stream.ReadExactlyAsync(buffer, 0, (int)Size);
@@ -102,13 +105,13 @@ namespace Spyro_Editor.Data
             switch (Game)
             {
                 case Game.Spyro1:
-                    names = SubfileNames.Spyro1_NSTC;
+                    names = SubfileNames.Spyro1_NTSC;
                     break;
                 case Game.Spyro2:
-                    names = SubfileNames.Spyro2_NSTC;
+                    names = SubfileNames.Spyro2_NTSC;
                     break;
                 case Game.Spyro3:
-                    names = SubfileNames.Spyro3_NSTC_1_1;
+                    names = SubfileNames.Spyro3_NTSC_1_1;
                     break;
                 default:
                     return defaultName;

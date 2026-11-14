@@ -1,3 +1,4 @@
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
@@ -7,12 +8,15 @@ using Spyro_Editor.Views;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Spyro_Editor
 {
     public sealed partial class MainWindow : Window
     {
         private WADBrowser WADBrowser;
+        private bool IsClosing;
+        private bool IsCleanedUp;
 
         public MainWindow()
         {
@@ -24,13 +28,30 @@ namespace Spyro_Editor
 
             MainSplitView.Pane = WADBrowser;
             SplitViewFrame.Navigate(typeof(GetStartedPane), new GetStartedContext(this, false));
-            Closed += MainWindow_Closed;
+            AppWindow.Closing += AppWindow_Closing;
         }
 
-        private void MainWindow_Closed(object sender, WindowEventArgs args)
+        private async void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
+            if (!IsCleanedUp)
+            {
+                args.Cancel = true;
+                await CloseAfterCleanUp();
+            }
+        }
+
+        private async Task CloseAfterCleanUp()
+        {
+            if (IsClosing)
+            {
+                return;
+            }
+            IsClosing = true;
             // dummy navigation so the current page cleans up
             SplitViewFrame.Navigate(typeof(Page));
+            await SubfilePane.PendingClose;
+            IsCleanedUp = true;
+            Close();
         }
 
         public async void OpenWAD()
@@ -45,7 +66,7 @@ namespace Spyro_Editor
             {
                 WAD wad;
                 string path = result.Path;
-                using (var stream = File.Open(result.Path, FileMode.Open))
+                using (var stream = File.Open(result.Path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     using (var reader = new BinaryReader(stream))
                     {
@@ -101,9 +122,9 @@ namespace Spyro_Editor
             await dialog.ShowAsync();
         }
 
-        private void ExitFlyoutItem_Click(object sender, RoutedEventArgs e)
+        private async void ExitFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            Environment.Exit(0);
+            await CloseAfterCleanUp();
         }
     }
 }

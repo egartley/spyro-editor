@@ -25,6 +25,7 @@ namespace Spyro_Editor.Views
         {
             Title.Text = wad.DisplayName;
             Model.Load(wad);
+            LastLoadedSubfileId = -1;
         }
 
         public void Unload()

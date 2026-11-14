@@ -70,7 +70,7 @@ namespace Spyro_Editor.Views
                     var file = await savePicker.PickSaveFileAsync();
                     if (file is not null)
                     {
-                        using (var stream = File.OpenWrite(file.Path))
+                        using (var stream = File.Create(file.Path))
                         {
                             using (var ramStream = stream.AsRandomAccessStream())
                             {

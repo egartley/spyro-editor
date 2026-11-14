@@ -6,11 +6,13 @@ using Microsoft.UI.Xaml.Navigation;
 using Spyro_Editor.Contexts;
 using Spyro_Editor.Data;
 using System;
+using System.Threading.Tasks;
 
 namespace Spyro_Editor.Views
 {
     public sealed partial class SubfilePane : Page
     {
+        public static Task PendingClose = Task.CompletedTask;
         private int SelectedIndex;
         private WindowId? WindowId;
         private Subfile? Subfile;
@@ -40,7 +42,7 @@ namespace Spyro_Editor.Views
             Navigate(0, true);
         }
 
-        public async void Close()
+        private async Task Close()
         {
             // dummy navigation to clear current page
             ContentFrame.Navigate(typeof(Page));
@@ -84,7 +86,7 @@ namespace Spyro_Editor.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            Close();
+            PendingClose = Close();
             base.OnNavigatedFrom(e);
         }
 
