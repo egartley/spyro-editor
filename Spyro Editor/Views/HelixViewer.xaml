@@ -30,7 +30,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="350" />
         </Grid.ColumnDefinitions>
-        <helix:Viewport3DX x:Name="Viewport" FrameRate="60.0" IsInertiaEnabled="False" ShowViewCube="False">
+        <helix:Viewport3DX x:Name="Viewport" FrameRate="60.0" IsInertiaEnabled="False" IsZoomEnabled="False" ShowViewCube="False" PointerPressed="Viewport_PointerPressed" PointerMoved="Viewport_PointerMoved" PointerReleased="Viewport_PointerReleased" PointerCaptureLost="Viewport_PointerCaptureLost" PointerWheelChanged="Viewport_PointerWheelChanged">
             <helix:ItemsModel3D ItemsSource="{x:Bind Model.VisibleMeshes}" ItemTemplate="{StaticResource GroundPartMeshTemplate}" />
         </helix:Viewport3DX>
         <Grid Grid.Column="1" Margin="12,0,0,0" Padding="12" CornerRadius="4" Background="{ThemeResource SystemControlBackgroundChromeBlackLowBrush}">

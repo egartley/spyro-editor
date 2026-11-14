@@ -24,6 +24,13 @@ namespace Spyro_Editor
 
             MainSplitView.Pane = WADBrowser;
             SplitViewFrame.Navigate(typeof(GetStartedPane), new GetStartedContext(this, false));
+            Closed += MainWindow_Closed;
+        }
+
+        private void MainWindow_Closed(object sender, WindowEventArgs args)
+        {
+            // dummy navigation so the current page cleans up
+            SplitViewFrame.Navigate(typeof(Page));
         }
 
         public async void OpenWAD()
