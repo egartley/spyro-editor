@@ -28,6 +28,11 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Shaders\psPS1Diffuse.cso">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
@@ -105,4 +110,18 @@
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
   </PropertyGroup>
+
+  <!-- Shaders -->
+  <ItemGroup>
+    <FxcShader Include="Shaders\psPS1Diffuse.hlsl" Profile="ps_4_0" />
+    <FxcInclude Include="Shaders\Common\*.hlsl" />
+  </ItemGroup>
+  <Target Name="CompileShaders" BeforeTargets="BeforeBuild" Inputs="@(FxcShader);@(FxcInclude)" Outputs="@(FxcShader->'%(RelativeDir)%(Filename).cso')">
+    <PropertyGroup>
+      <KitsRoot10 Condition="'$(KitsRoot10)' == ''">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Kits\Installed Roots', 'KitsRoot10', null, RegistryView.Registry32))</KitsRoot10>
+      <FxcPath Condition="'$(FxcPath)' == ''">$(KitsRoot10)bin\$(TargetPlatformVersion)\x64\fxc.exe</FxcPath>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(FxcPath)')" Text="fxc.exe not found at '$(FxcPath)'. Install the Windows SDK $(TargetPlatformVersion) or set the FxcPath property." />
+    <Exec Command="&quot;$(FxcPath)&quot; /nologo /T %(FxcShader.Profile) /E main /O3 /Fo &quot;%(FxcShader.RelativeDir)%(FxcShader.Filename).cso&quot; &quot;%(FxcShader.FullPath)&quot;" />
+  </Target>
 </Project>

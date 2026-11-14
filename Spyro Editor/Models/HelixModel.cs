@@ -4,6 +4,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using Spyro_Editor.Constants;
 using Spyro_Editor.Data.Level;
+using Spyro_Editor.Rendering;
 using Spyro_Editor.Utils;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,11 +35,10 @@ namespace Spyro_Editor.Models
             sampler.Filter = Filter.MinMagPointMipLinear;
             foreach (Texture texture in level.Textures!)
             {
-                Materials.Add(new DiffuseMaterial()
+                Materials.Add(new PS1DiffuseMaterial()
                 {
                     DiffuseMap = new TextureModel(texture.COR, Texture.COR_SIZE, Texture.COR_SIZE),
-                    DiffuseMapSampler = sampler,
-                    VertexColorBlendingFactor = 0.3
+                    DiffuseMapSampler = sampler
                 });
             }
             for (int i = 0; i < level.Ground!.Parts.Length; i++)

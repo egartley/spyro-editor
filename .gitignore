@@ -433,3 +433,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Compiled shaders (built by the CompileShaders target)
+*.cso

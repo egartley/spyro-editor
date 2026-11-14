@@ -1,10 +1,10 @@
-using HelixToolkit.SharpDX.Core;
 using HelixToolkit.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Spyro_Editor.Contexts;
 using Spyro_Editor.Models;
+using Spyro_Editor.Rendering;
 
 namespace Spyro_Editor.Views
 {
@@ -18,7 +18,7 @@ namespace Spyro_Editor.Views
             Model = new HelixModel();
 
             Viewport.Camera = new PerspectiveCamera() { FarPlaneDistance = 1e6, NearPlaneDistance = 10 };
-            Viewport.EffectsManager = new DefaultEffectsManager();
+            Viewport.EffectsManager = new PS1EffectsManager();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
