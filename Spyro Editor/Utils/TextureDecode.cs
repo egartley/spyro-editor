@@ -80,7 +80,7 @@ namespace Spyro_Editor.Utils
                 return rgba;
             }
 
-            byte[] rotated = new byte[rgba.Length];
+            byte[] rotated;
 
             switch (header.Rotation)
             {
@@ -126,9 +126,9 @@ namespace Spyro_Editor.Utils
         private static byte[] GetColorsByWord(int word)
         {
             return [
-                (byte)(((word & 31) * 255 / 31) | 0),
-                (byte)((((word >> 5) & 31) * 255 / 31) | 0),
-                (byte)((((word >> 10) & 31) * 255 / 31) | 0),
+                (byte)((word & 31) * 255 / 31),
+                (byte)(((word >> 5) & 31) * 255 / 31),
+                (byte)(((word >> 10) & 31) * 255 / 31),
                 (byte)(((word >> 15) & 1) == 1 ? 0 : 255) // check this again
             ];
         }

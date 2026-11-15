@@ -34,6 +34,7 @@ namespace Spyro_Editor.Views
         private Vector2 MouseDelta;
         private Windows.Foundation.Point? LastPointerPosition;
         private bool AreBothButtonsPressed;
+        private bool IsClosed;
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
@@ -54,6 +55,12 @@ namespace Spyro_Editor.Views
             {
                 WindowHandle = Win32Interop.GetWindowFromWindowId(context.WindowId);
                 await Model.Load(context.Subfile.Level!, context.Subfile.Game);
+                if (IsClosed)
+                {
+                    // navigated away mid-load
+                    Model.Close();
+                    return;
+                }
                 Viewport.Camera.Position = Model.Centroid;
                 PartsPaneTitle.Text = $"Parts ({Model.VisibleMeshes.Count})";
             }
@@ -63,6 +70,7 @@ namespace Spyro_Editor.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            IsClosed = true;
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
             Model.Close();
             Viewport.EffectsManager.Dispose();

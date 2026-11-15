@@ -50,6 +50,14 @@ namespace Spyro_Editor
             // dummy navigation so the current page cleans up
             SplitViewFrame.Navigate(typeof(Page));
             await SubfilePane.PendingClose;
+            try
+            {
+                await Subfile.DeleteTempFolder();
+            }
+            catch (Exception)
+            {
+                // fine if temp folder is still there
+            }
             IsCleanedUp = true;
             Close();
         }

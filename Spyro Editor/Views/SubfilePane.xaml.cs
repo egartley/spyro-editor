@@ -13,6 +13,8 @@ namespace Spyro_Editor.Views
     public sealed partial class SubfilePane : Page
     {
         public static Task PendingClose = Task.CompletedTask;
+        private Task LoadTask = Task.CompletedTask;
+        private bool IsClosed;
         private int SelectedIndex;
         private WindowId? WindowId;
         private Subfile? Subfile;
@@ -23,30 +25,52 @@ namespace Spyro_Editor.Views
             SelectedIndex = 0;
         }
 
-        public async void Load(string wadPath, Subfile subfile)
+        private async Task Load(string wadPath, Subfile subfile)
         {
             Subfile = subfile;
-
-            await Subfile.WriteTemp(wadPath);
-            if (Subfile.Type != Constants.SubfileType.Level)
+            try
             {
-                HelixViewSelectorItem.Visibility = Visibility.Collapsed;
-                TextureGallerySelectorItem.Visibility = Visibility.Collapsed;
-                MobyInstancesSelectorItem.Visibility = Visibility.Collapsed;
+                // previous pane may still be using the same temp file
+                await PendingClose;
+                if (IsClosed)
+                {
+                    return;
+                }
+                await Subfile.WriteTemp(wadPath);
+                if (Subfile.Type != Constants.SubfileType.Level)
+                {
+                    HelixViewSelectorItem.Visibility = Visibility.Collapsed;
+                    TextureGallerySelectorItem.Visibility = Visibility.Collapsed;
+                    MobyInstancesSelectorItem.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    await Subfile.LoadLevel();
+                }
             }
-            else
+            catch (Exception)
             {
-                await Subfile.LoadLevel();
+                return;
+            }
+            if (IsClosed)
+            {
+                return;
             }
 
+            SelectorBar.IsEnabled = true;
             Navigate(0, true);
         }
 
         private async Task Close()
         {
+            IsClosed = true;
             // dummy navigation to clear current page
             ContentFrame.Navigate(typeof(Page));
-            await Subfile!.DeleteTemp();
+            await LoadTask;
+            if (Subfile is not null)
+            {
+                await Subfile.DeleteTemp();
+            }
         }
 
         private void Navigate(int index, bool bottomTransition = false)
@@ -78,8 +102,8 @@ namespace Spyro_Editor.Views
         {
             if (e.Parameter is SubfilePaneContext context)
             {
-                Load(context.WADPath, context.Subfile);
                 WindowId = context.WindowId;
+                LoadTask = Load(context.WADPath, context.Subfile);
             }
             base.OnNavigatedTo(e);
         }

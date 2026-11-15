@@ -17,6 +17,7 @@ namespace Spyro_Editor.Data
         public Game Game;
         public Level.Level? Level;
         public SubfileType Type;
+        private static readonly string TempFolderName = $"instance{Environment.ProcessId}";
         private string TempFileName;
 
         public Subfile(Game game, short id, uint offset, uint size)
@@ -32,14 +33,25 @@ namespace Spyro_Editor.Data
 
         public async Task WriteTemp(string wadPath)
         {
-            StorageFile tempFile = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(TempFileName, CreationCollisionOption.ReplaceExisting);
+            StorageFolder tempFolder = await GetTempFolder();
+            StorageFile tempFile = await tempFolder.CreateFileAsync(TempFileName, CreationCollisionOption.ReplaceExisting);
             byte[] buffer = await GetBuffer(true, wadPath);
             await FileIO.WriteBytesAsync(tempFile, buffer);
         }
 
         public async Task DeleteTemp()
         {
-            IStorageItem? item = await ApplicationData.Current.TemporaryFolder.TryGetItemAsync(TempFileName);
+            StorageFolder tempFolder = await GetTempFolder();
+            IStorageItem? item = await tempFolder.TryGetItemAsync(TempFileName);
+            if (item is not null)
+            {
+                await item.DeleteAsync();
+            }
+        }
+
+        public static async Task DeleteTempFolder()
+        {
+            IStorageItem? item = await ApplicationData.Current.TemporaryFolder.TryGetItemAsync(TempFolderName);
             if (item is not null)
             {
                 await item.DeleteAsync();
@@ -48,14 +60,16 @@ namespace Spyro_Editor.Data
 
         public async Task LoadLevel()
         {
-            Level = new Level.Level();
-            using (var stream = await GetTempFileStream())
+            byte[] data = await GetBuffer(false);
+            Level = await Task.Run(() =>
             {
-                using (var reader = new BinaryReader(stream))
+                Level.Level level = new Level.Level();
+                using (var reader = new BinaryReader(new MemoryStream(data)))
                 {
-                    Level.Read(reader, Game);
+                    level.Read(reader, Game);
                 }
-            }
+                return level;
+            });
         }
 
         public async Task<byte[]> GetBuffer(bool readFromWAD, string wadPath = "")
@@ -87,15 +101,15 @@ namespace Spyro_Editor.Data
             }
         }
 
-        public async Task<Stream> GetTempFileStream()
-        {
-            StorageFile tempFile = await GetTempFile();
-            return await tempFile.OpenStreamForReadAsync();
-        }
-
         private async Task<StorageFile> GetTempFile()
         {
-            return await ApplicationData.Current.TemporaryFolder.GetFileAsync(TempFileName);
+            StorageFolder tempFolder = await GetTempFolder();
+            return await tempFolder.GetFileAsync(TempFileName);
+        }
+
+        private static async Task<StorageFolder> GetTempFolder()
+        {
+            return await ApplicationData.Current.TemporaryFolder.CreateFolderAsync(TempFolderName, CreationCollisionOption.OpenIfExists);
         }
 
         private string GetDisplayName()

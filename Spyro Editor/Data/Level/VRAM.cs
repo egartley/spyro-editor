@@ -8,8 +8,8 @@ namespace Spyro_Editor.Data.Level
     public class VRAM : IBinaryObject
     {
         private ushort[] Words;
-        private static int SIZE = 524288;
-        private static int MAX_WORD = 512;
+        private const int SIZE = 524288;
+        private const int MAX_WORD = 512;
 
         public VRAM()
         {

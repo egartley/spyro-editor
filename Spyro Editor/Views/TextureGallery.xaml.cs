@@ -25,7 +25,7 @@ namespace Spyro_Editor.Views
             Model = new TextureGalleryModel();
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.Parameter is SubfileContext context)
             {

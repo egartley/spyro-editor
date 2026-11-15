@@ -11,7 +11,7 @@ namespace Spyro_Editor.Data.Level
         public int Z;
         public byte ClassID;
         public byte Yaw;
-        public static byte SIZE = 88;
+        public const byte SIZE = 88;
 
         public void Read(BinaryReader reader, Game game)
         {

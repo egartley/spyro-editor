@@ -21,6 +21,7 @@ namespace Spyro_Editor.Views
             {
                 Model.Load(context.Subfile);
             }
+            base.OnNavigatedTo(e);
         }
     }
 }

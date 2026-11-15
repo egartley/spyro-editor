@@ -82,7 +82,7 @@ namespace Spyro_Editor.Data
                     strikes = 0;
                     if (size > 0)
                     {
-                        Subfiles.Add(new Subfile(Game, (short)(index + 1), offset, size));
+                        Subfiles.Add(new Subfile(game, (short)(index + 1), offset, size));
                     }
                 }
                 if (index + 1 == short.MaxValue)

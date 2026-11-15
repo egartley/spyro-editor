@@ -5,11 +5,11 @@ namespace Spyro_Editor.Data.Level
 {
     public class Texture
     {
-        public static byte LOD_SIZE = 32;
-        public static byte MID_SIZE = 32;
-        public static byte SPR_SIZE = 32;
-        public static byte COR_SIZE = 64;
-        public static byte TNY_SIZE = 64;
+        public const byte LOD_SIZE = 32;
+        public const byte MID_SIZE = 32;
+        public const byte SPR_SIZE = 32;
+        public const byte COR_SIZE = 64;
+        public const byte TNY_SIZE = 64;
         public byte[] RGBA_LOD;
         public byte[] RGBA_MID;
         public byte[] RGBA_COR;

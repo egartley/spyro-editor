@@ -22,6 +22,7 @@ namespace Spyro_Editor.Models
         public ObservableCollection<GroundPartModel> VisibleMeshes = new();
         public ObservableCollection<PartListItem> ListItems = new();
         private DiffuseMaterialCollection Materials = new();
+        private VertColorMaterial LowMaterial = new();
 
         public async Task Load(Level level, Game game)
         {
@@ -41,12 +42,22 @@ namespace Spyro_Editor.Models
                     DiffuseMapSampler = sampler
                 });
             }
-            for (int i = 0; i < level.Ground!.Parts.Length; i++)
+            // only the geometry is built off the UI thread
+            Material[] materials = [.. Materials];
+            GroundPartModel[] parts = await Task.Run(() =>
             {
-                GroundPartModel m = new GroundPartModel(level.Ground!.Parts[i], i, level.Textures!, Materials, game);
+                GroundPartModel[] built = new GroundPartModel[level.Ground!.Parts.Length];
+                for (int i = 0; i < built.Length; i++)
+                {
+                    built[i] = new GroundPartModel(level.Ground.Parts[i], i, level.Textures!, materials, LowMaterial, game);
+                }
+                return built;
+            });
+            foreach (GroundPartModel m in parts)
+            {
                 AllParts.Add(m);
                 VisibleMeshes.Add(m);
-                ListItems.Add(new PartListItem() { Id = i, IsVisible = true });
+                ListItems.Add(new PartListItem() { Id = m.Id, IsVisible = true });
             }
             Centroid = MathHelpers.MergeCentroids(AllParts.Select(p => p.Centroid));
         }

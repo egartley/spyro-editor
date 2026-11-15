@@ -15,7 +15,7 @@ namespace Spyro_Editor.Views
             Model = new();
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.Parameter is SubfileContext context)
             {
